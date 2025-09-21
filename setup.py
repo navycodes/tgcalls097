@@ -99,7 +99,7 @@ def install_nodejs():
                         if shutil.which(helper):
                             aur_helper = helper
                             break
-                    
+
                     if aur_helper:
                         subprocess.check_call(
                             [aur_helper, "-S", "--noconfirm", "nodejs-lts-hydrogen"],
