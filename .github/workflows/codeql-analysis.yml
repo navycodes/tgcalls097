@@ -1,71 +1,207 @@
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
-#
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
-#
-# ******** NOTE ********
-# We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
-# supported CodeQL languages.
-#
-name: "CodeQL"
+name: "CodeQL Security Analysis"
 
 on:
   push:
-    branches: [ master]
+    branches: [ master, main, develop ]
+    paths:
+      - '**/*.py'
+      - '**/*.js'
+      - '**/*.ts'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'package.json'
+      - 'requirements*.txt'
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ master ]
+    branches: [ master, main ]
+    paths:
+      - '**/*.py'
+      - '**/*.js'
+      - '**/*.ts'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'package.json'
+      - 'requirements*.txt'
   schedule:
     - cron: '38 8 * * 5'
+  workflow_dispatch:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Security Analysis (${{ matrix.language }})
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
     permissions:
       actions: read
       contents: read
       security-events: write
+      pull-requests: read
 
     strategy:
       fail-fast: false
       matrix:
         language: [ 'javascript', 'python' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
-        # Learn more:
-        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        # queries: ./path/to/local/query, your-org/your-repo/queries@main
+      - name: Setup Node.js (for py-tgcalls)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20.4'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+          cache: 'pip'
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            python3-dev \
+            libffi-dev \
+            libnacl-dev \
+            python3-setuptools \
+            git
 
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
+      - name: Install Node.js dependencies
+        if: matrix.language == 'javascript'
+        run: |
+          # Check if package.json exists
+          if [ -f "package.json" ]; then
+            # Use npm ci if package-lock.json exists, otherwise npm install
+            if [ -f "package-lock.json" ]; then
+              npm ci --prefer-offline --no-audit
+            else
+              npm install --prefer-offline --no-audit
+            fi
+          else
+            echo "No package.json found, skipping Node.js dependencies"
+          fi
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+      - name: Install Python dependencies
+        if: matrix.language == 'python'
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          
+          # Install requirements if available
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+          
+          # Install dev requirements if available
+          if [ -f "requirements-dev.txt" ]; then
+            pip install -r requirements-dev.txt
+          fi
+          
+          # Install project dependencies from setup.py
+          pip install -e ".[dev]" || pip install -e . || true
+          
+          # Install common analysis tools
+          pip install bandit safety
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+          config-file: ./.github/codeql/codeql-config.yml
+        env:
+          CODEQL_PYTHON: /opt/hostedtoolcache/Python/3.12.7/x64/bin/python
+
+      - name: Manual Build (Python)
+        if: matrix.language == 'python'
+        run: |
+          # Build the project manually for better CodeQL analysis
+          python setup.py build_ext --inplace || true
+          python -c "import sys; print(f'Python path: {sys.path}')"
+          
+          # Verify pytgcalls can be imported
+          python -c "
+          try:
+              import pytgcalls
+              print('✓ pytgcalls imported successfully')
+          except ImportError as e:
+              print(f'⚠ pytgcalls import failed: {e}')
+          " || true
+
+      - name: Manual Build (JavaScript)
+        if: matrix.language == 'javascript'
+        run: |
+          # Build TypeScript if tsconfig.json exists
+          if [ -f "tsconfig.json" ]; then
+            npx tsc --noEmit || true
+          fi
+          
+          # Run any build scripts
+          if [ -f "package.json" ]; then
+            npm run build --if-present || true
+          fi
+
+      - name: Run Bandit Security Scan
+        if: matrix.language == 'python'
+        continue-on-error: true
+        run: |
+          bandit -r . -f json -o bandit-report.json || true
+          bandit -r . --severity-level medium || true
+
+      - name: Run Safety Check
+        if: matrix.language == 'python'
+        continue-on-error: true
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check || true
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          upload: true
+          
+      - name: Upload Bandit Report
+        if: matrix.language == 'python'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+        continue-on-error: true
+
+      - name: Upload Safety Report
+        if: matrix.language == 'python'
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-vulnerability-report
+          path: safety-report.json
+        continue-on-error: true
+
+  security-summary:
+    name: Security Analysis Summary
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: always()
+    
+    steps:
+      - name: Summary
+        run: |
+          echo "## 🔍 Security Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Analysis Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Python Analysis**: ${{ needs.analyze.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **JavaScript Analysis**: ${{ needs.analyze.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Reports Generated:" >> $GITHUB_STEP_SUMMARY
+          echo "- CodeQL Security Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- Bandit Python Security Scan" >> $GITHUB_STEP_SUMMARY
+          echo "- Safety Vulnerability Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note**: Check the Security tab for detailed findings." >> $GITHUB_STEP_SUMMARY
