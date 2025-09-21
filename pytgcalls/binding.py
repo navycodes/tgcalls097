@@ -1,5 +1,4 @@
 import asyncio
-import atexit
 import json
 import logging
 import os
@@ -10,13 +9,11 @@ from asyncio import Future
 from asyncio.subprocess import Process
 from json import JSONDecodeError
 from time import time
-from typing import Callable
-from typing import Dict
-from typing import Optional
+from typing import Callable, Dict, Optional
 
 from .types.session import Session
 
-py_logger = logging.getLogger('pytgcalls')
+py_logger = logging.getLogger("pytgcalls")
 
 
 class Binding:
@@ -25,7 +22,7 @@ class Binding:
         overload_quiet_mode: bool,
     ):
         self._js_process: Optional[Process] = None
-        self._ssid = ''
+        self._ssid = ""
         self._on_request: Optional[Callable] = None
         self._on_connect: Optional[Callable] = None
         self._last_ping = 0
@@ -87,10 +84,12 @@ class Binding:
         session = Session.generate_session_id(15)
         loop = asyncio.get_event_loop()
         self._waiting_ping[session] = loop.create_future()
-        await self._send({
-            'ping_with_response': True,
-            'sid': session,
-        })
+        await self._send(
+            {
+                "ping_with_response": True,
+                "sid": session,
+            }
+        )
         await self._waiting_ping[session]
         del self._waiting_ping[session]
         return (time() - start_time) * 1000.0
@@ -106,8 +105,8 @@ class Binding:
     ):
         if self._js_process is None:
             self._js_process = await asyncio.create_subprocess_exec(
-                'node',
-                os.path.join(self._run_folder, 'dist', 'index.js'),
+                "node",
+                os.path.join(self._run_folder, "dist", "index.js"),
                 stdout=subprocess.PIPE,
                 stdin=subprocess.PIPE,
             )
@@ -116,78 +115,84 @@ class Binding:
                 try:
                     if self._js_process.stdout is None:
                         break
-                    out = (await self._js_process.stdout.readline()) \
-                        .decode().replace('\r', '')
+                    out = (
+                        (await self._js_process.stdout.readline())
+                        .decode()
+                        .replace("\r", "")
+                    )
                     if not out:
                         break
-                    list_data = out.split('\n')
+                    list_data = out.split("\n")
                     for update in list_data:
                         try:
                             json_out = json.loads(update)
-                            if 'ping_with_response' in json_out:
-                                session_id = json_out['sid']
+                            if "ping_with_response" in json_out:
+                                session_id = json_out["sid"]
                                 if session_id in self._waiting_ping:
-                                    self._waiting_ping[
-                                        session_id
-                                    ].set_result(
+                                    self._waiting_ping[session_id].set_result(
                                         None,
                                     )
-                            if 'ping' in json_out:
+                            if "ping" in json_out:
                                 self._last_ping = int(time())
-                            if 'try_connect' in json_out:
-                                self._ssid = json_out['try_connect']
+                            if "try_connect" in json_out:
+                                self._ssid = json_out["try_connect"]
                                 asyncio.ensure_future(
-                                    self._send({
-                                        'try_connect': 'connected',
-                                        'user_id': user_id,
-                                        'overload_quiet': self._overload_quiet,
-                                    }),
+                                    self._send(
+                                        {
+                                            "try_connect": "connected",
+                                            "user_id": user_id,
+                                            "overload_quiet": self._overload_quiet,
+                                        }
+                                    ),
                                 )
                                 if self._on_connect is not None:
                                     asyncio.ensure_future(self._on_connect())
-                            elif 'ssid' in json_out and 'uid' in json_out:
-                                if json_out['ssid'] == self._ssid:
+                            elif "ssid" in json_out and "uid" in json_out:
+                                if json_out["ssid"] == self._ssid:
                                     if self._on_request is not None:
+
                                         async def future_response(
                                             future_json_out: dict,
                                         ):
                                             if self._on_request is None:
                                                 return
                                             result = await self._on_request(
-                                                future_json_out['data'],
+                                                future_json_out["data"],
                                             )
                                             if isinstance(result, dict):
                                                 await self._send_response(
                                                     result,
-                                                    future_json_out['uid'],
+                                                    future_json_out["uid"],
                                                 )
                                             else:
                                                 await self._send_error(
-                                                    'INVALID_RESPONSE',
-                                                    future_json_out['uid'],
+                                                    "INVALID_RESPONSE",
+                                                    future_json_out["uid"],
                                                 )
 
                                         asyncio.ensure_future(
                                             future_response(json_out),
                                         )
-                            elif 'log_message' in json_out \
-                                    and 'verbose_mode' in json_out:
-                                if json_out['verbose_mode'] == 1:
-                                    py_logger.debug(json_out['log_message'])
-                                elif json_out['verbose_mode'] == 2:
-                                    py_logger.info(json_out['log_message'])
-                                elif json_out['verbose_mode'] == 3:
-                                    py_logger.warning(json_out['log_message'])
-                                elif json_out['verbose_mode'] == 4:
-                                    py_logger.error(json_out['log_message'])
+                            elif (
+                                "log_message" in json_out and "verbose_mode" in json_out
+                            ):
+                                if json_out["verbose_mode"] == 1:
+                                    py_logger.debug(json_out["log_message"])
+                                elif json_out["verbose_mode"] == 2:
+                                    py_logger.info(json_out["log_message"])
+                                elif json_out["verbose_mode"] == 3:
+                                    py_logger.warning(json_out["log_message"])
+                                elif json_out["verbose_mode"] == 4:
+                                    py_logger.error(json_out["log_message"])
                         except JSONDecodeError:
                             if update:
-                                if ':replace_line:' in update:
+                                if ":replace_line:" in update:
                                     print(
                                         update.replace(
-                                            ':replace_line:', '',
+                                            ":replace_line:",
+                                            "",
                                         ),
-                                        end='\r',
+                                        end="\r",
                                     )
                                 else:
                                     print(update)
@@ -196,25 +201,31 @@ class Binding:
 
     async def _send_response(self, json_data: dict, uid: str):
         if self._ssid:
-            await self._send({
-                'data': json_data,
-                'uid': uid,
-                'ssid': self._ssid,
-            })
+            await self._send(
+                {
+                    "data": json_data,
+                    "uid": uid,
+                    "ssid": self._ssid,
+                }
+            )
 
     async def _send_error(self, err_mess: str, uid: str):
         if self._ssid:
-            await self._send({
-                'err_mess': err_mess,
-                'uid': uid,
-                'ssid': self._ssid,
-            })
+            await self._send(
+                {
+                    "err_mess": err_mess,
+                    "uid": uid,
+                    "ssid": self._ssid,
+                }
+            )
 
     async def send(self, json_data: dict):
-        await self._send({
-            'data': json_data,
-            'ssid': self._ssid,
-        })
+        await self._send(
+            {
+                "data": json_data,
+                "ssid": self._ssid,
+            }
+        )
 
     async def _send(self, json_data: dict):
         try:
@@ -226,7 +237,7 @@ class Binding:
                     await self._js_process.stdin.drain()
         except ConnectionResetError:
             pass
-        
+
     async def stop(self):
         if self._js_process is not None:
             try:
