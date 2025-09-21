@@ -4,9 +4,13 @@ import time
 from pyrogram import Client
 
 from pytgcalls import PyTgCalls, StreamType, idle
-from pytgcalls.types.input_stream import (AudioParameters, InputAudioStream,
-                                          InputStream, InputVideoStream,
-                                          VideoParameters)
+from pytgcalls.types.input_stream import (
+    AudioParameters,
+    InputAudioStream,
+    InputStream,
+    InputVideoStream,
+    VideoParameters,
+)
 
 app = Client(
     "py-tgcalls",

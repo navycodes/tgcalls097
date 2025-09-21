@@ -32,7 +32,6 @@ class BindingRunner(Scaffold):
             except Exception as e:
                 print(e)
 
-
         await PyTgCallsSession().start()
         loop = asyncio.get_event_loop()
         started_core = loop.create_future()

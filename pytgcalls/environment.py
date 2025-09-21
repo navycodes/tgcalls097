@@ -1,7 +1,11 @@
 import os
 
-from .exceptions import (NodeJSNotInstalled, TooOldNodeJSVersion,
-                         TooOldPyrogramVersion, TooOldTelethonVersion)
+from .exceptions import (
+    NodeJSNotInstalled,
+    TooOldNodeJSVersion,
+    TooOldPyrogramVersion,
+    TooOldTelethonVersion,
+)
 from .version_manager import VersionManager
 
 

@@ -3,19 +3,31 @@ import logging
 import shlex
 from typing import Union
 
-from ...exceptions import (AlreadyJoinedError, InvalidStreamMode,
-                           NoActiveGroupCall, NodeJSNotRunning,
-                           NoMtProtoClientSet, RTMPStreamNeeded,
-                           TelegramServerError, UnMuteNeeded)
+from ...exceptions import (
+    AlreadyJoinedError,
+    InvalidStreamMode,
+    NoActiveGroupCall,
+    NodeJSNotRunning,
+    NoMtProtoClientSet,
+    RTMPStreamNeeded,
+    TelegramServerError,
+    UnMuteNeeded,
+)
 from ...file_manager import FileManager
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
 from ...stream_type import StreamType
-from ...types import (AlreadyJoined, CaptureAudioDevice, CaptureAVDesktop,
-                      CaptureAVDeviceDesktop, CaptureVideoDesktop,
-                      ErrorDuringJoin, MutedCall, UpgradeNeeded)
-from ...types.input_stream import (AudioPiped, AudioVideoPiped, InputStream,
-                                   VideoPiped)
+from ...types import (
+    AlreadyJoined,
+    CaptureAudioDevice,
+    CaptureAVDesktop,
+    CaptureAVDeviceDesktop,
+    CaptureVideoDesktop,
+    ErrorDuringJoin,
+    MutedCall,
+    UpgradeNeeded,
+)
+from ...types.input_stream import AudioPiped, AudioVideoPiped, InputStream, VideoPiped
 from ...types.input_stream.audio_image_piped import AudioImagePiped
 from ...types.session import Session
 

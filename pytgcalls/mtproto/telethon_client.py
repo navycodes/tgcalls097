@@ -6,21 +6,34 @@ from telethon.errors import ChannelPrivateError
 from telethon.events import Raw
 from telethon.tl.functions.channels import GetFullChannelRequest
 from telethon.tl.functions.messages import GetFullChatRequest
-from telethon.tl.functions.phone import (EditGroupCallParticipantRequest,
-                                         GetGroupCallRequest,
-                                         GetGroupParticipantsRequest,
-                                         JoinGroupCallRequest,
-                                         LeaveGroupCallRequest)
-from telethon.tl.types import (ChatForbidden, DataJSON, GroupCall,
-                               GroupCallDiscarded, InputChannel,
-                               InputGroupCall, InputPeerChannel,
-                               MessageActionChatDeleteUser,
-                               MessageActionInviteToGroupCall, MessageService,
-                               PeerChat, TypeInputPeer, UpdateChannel,
-                               UpdateGroupCall, UpdateGroupCallConnection,
-                               UpdateGroupCallParticipants,
-                               UpdateNewChannelMessage, UpdateNewMessage,
-                               Updates)
+from telethon.tl.functions.phone import (
+    EditGroupCallParticipantRequest,
+    GetGroupCallRequest,
+    GetGroupParticipantsRequest,
+    JoinGroupCallRequest,
+    LeaveGroupCallRequest,
+)
+from telethon.tl.types import (
+    ChatForbidden,
+    DataJSON,
+    GroupCall,
+    GroupCallDiscarded,
+    InputChannel,
+    InputGroupCall,
+    InputPeerChannel,
+    MessageActionChatDeleteUser,
+    MessageActionInviteToGroupCall,
+    MessageService,
+    PeerChat,
+    TypeInputPeer,
+    UpdateChannel,
+    UpdateGroupCall,
+    UpdateGroupCallConnection,
+    UpdateGroupCallParticipants,
+    UpdateNewChannelMessage,
+    UpdateNewMessage,
+    Updates,
+)
 
 from .bridged_client import BridgedClient
 from .client_cache import ClientCache

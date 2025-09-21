@@ -3,16 +3,19 @@ import logging
 import shlex
 from typing import Union
 
-from ...exceptions import (NodeJSNotRunning, NoMtProtoClientSet,
-                           NotInGroupCallError)
+from ...exceptions import NodeJSNotRunning, NoMtProtoClientSet, NotInGroupCallError
 from ...file_manager import FileManager
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
-from ...types import (CaptureAudioDevice, CaptureAVDesktop,
-                      CaptureAVDeviceDesktop, CaptureVideoDesktop,
-                      NotInGroupCall, StreamDeleted)
-from ...types.input_stream import (AudioPiped, AudioVideoPiped, InputStream,
-                                   VideoPiped)
+from ...types import (
+    CaptureAudioDevice,
+    CaptureAVDesktop,
+    CaptureAVDeviceDesktop,
+    CaptureVideoDesktop,
+    NotInGroupCall,
+    StreamDeleted,
+)
+from ...types.input_stream import AudioPiped, AudioVideoPiped, InputStream, VideoPiped
 from ...types.input_stream.audio_image_piped import AudioImagePiped
 from ...types.session import Session
 

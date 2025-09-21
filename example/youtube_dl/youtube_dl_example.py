@@ -4,8 +4,7 @@ from pyrogram import Client
 
 from pytgcalls import PyTgCalls, StreamType, idle
 from pytgcalls.types.input_stream import AudioVideoPiped
-from pytgcalls.types.input_stream.quality import (HighQualityAudio,
-                                                  HighQualityVideo)
+from pytgcalls.types.input_stream.quality import HighQualityAudio, HighQualityVideo
 
 
 # USE THIS IF YOU WANT SYNC WAY

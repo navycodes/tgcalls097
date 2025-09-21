@@ -1,7 +1,21 @@
-from .groups import (AlreadyJoined, ErrorDuringJoin, JoinedVoiceChat,
-                     LeftVoiceChat, MutedCall, NotInGroupCall, UpgradeNeeded)
-from .stream import (ChangedStream, MutedStream, PausedStream, ResumedStream,
-                     StreamDeleted, StreamTime, UnMutedStream)
+from .groups import (
+    AlreadyJoined,
+    ErrorDuringJoin,
+    JoinedVoiceChat,
+    LeftVoiceChat,
+    MutedCall,
+    NotInGroupCall,
+    UpgradeNeeded,
+)
+from .stream import (
+    ChangedStream,
+    MutedStream,
+    PausedStream,
+    ResumedStream,
+    StreamDeleted,
+    StreamTime,
+    UnMutedStream,
+)
 
 
 class Object:

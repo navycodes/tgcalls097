@@ -1,8 +1,11 @@
 from ...scaffold import Scaffold
 from ...types import Update
-from ...types.groups import (GroupCallParticipant, JoinedGroupCallParticipant,
-                             LeftGroupCallParticipant,
-                             UpdatedGroupCallParticipant)
+from ...types.groups import (
+    GroupCallParticipant,
+    JoinedGroupCallParticipant,
+    LeftGroupCallParticipant,
+    UpdatedGroupCallParticipant,
+)
 
 
 class MtProtoHandler(Scaffold):

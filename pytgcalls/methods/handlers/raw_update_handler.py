@@ -4,8 +4,7 @@ from ...scaffold import Scaffold
 from ...types.call_holder import CallHolder
 from ...types.groups import JoinedVoiceChat, LeftVoiceChat
 from ...types.object import Object
-from ...types.stream import (ChangedStream, PausedStream, ResumedStream,
-                             StreamDeleted)
+from ...types.stream import ChangedStream, PausedStream, ResumedStream, StreamDeleted
 
 
 class RawUpdateHandler(Scaffold):

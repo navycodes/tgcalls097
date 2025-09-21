@@ -1,21 +1,52 @@
 from .browsers import Browsers
 from .cache import Cache
-from .groups import (AlreadyJoined, ErrorDuringJoin, GroupCall,
-                     GroupCallParticipant, JoinedGroupCallParticipant,
-                     JoinedVoiceChat, LeftGroupCallParticipant, LeftVoiceChat,
-                     MutedCall, NotInGroupCall, UpdatedGroupCallParticipant,
-                     UpgradeNeeded)
-from .input_stream import (AudioImagePiped, AudioParameters, AudioPiped,
-                           AudioVideoPiped, CaptureAudioDevice,
-                           CaptureAVDesktop, CaptureAVDeviceDesktop,
-                           CaptureVideoDesktop, InputAudioStream, InputStream,
-                           InputVideoStream, VideoParameters, VideoPiped)
-from .input_stream.quality import (HighQualityAudio, HighQualityVideo,
-                                   LowQualityAudio, LowQualityVideo,
-                                   MediumQualityAudio, MediumQualityVideo)
-from .stream import (ChangedStream, MutedStream, PausedStream, ResumedStream,
-                     StreamAudioEnded, StreamDeleted, StreamVideoEnded,
-                     UnMutedStream)
+from .groups import (
+    AlreadyJoined,
+    ErrorDuringJoin,
+    GroupCall,
+    GroupCallParticipant,
+    JoinedGroupCallParticipant,
+    JoinedVoiceChat,
+    LeftGroupCallParticipant,
+    LeftVoiceChat,
+    MutedCall,
+    NotInGroupCall,
+    UpdatedGroupCallParticipant,
+    UpgradeNeeded,
+)
+from .input_stream import (
+    AudioImagePiped,
+    AudioParameters,
+    AudioPiped,
+    AudioVideoPiped,
+    CaptureAudioDevice,
+    CaptureAVDesktop,
+    CaptureAVDeviceDesktop,
+    CaptureVideoDesktop,
+    InputAudioStream,
+    InputStream,
+    InputVideoStream,
+    VideoParameters,
+    VideoPiped,
+)
+from .input_stream.quality import (
+    HighQualityAudio,
+    HighQualityVideo,
+    LowQualityAudio,
+    LowQualityVideo,
+    MediumQualityAudio,
+    MediumQualityVideo,
+)
+from .stream import (
+    ChangedStream,
+    MutedStream,
+    PausedStream,
+    ResumedStream,
+    StreamAudioEnded,
+    StreamDeleted,
+    StreamVideoEnded,
+    UnMutedStream,
+)
 from .update import Update
 
 __all__ = (

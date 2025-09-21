@@ -4,8 +4,12 @@ import subprocess
 from json import JSONDecodeError
 from typing import Dict, List, Optional
 
-from .exceptions import (FFmpegNotInstalled, InvalidVideoProportion,
-                         NoAudioSourceFound, NoVideoSourceFound)
+from .exceptions import (
+    FFmpegNotInstalled,
+    InvalidVideoProportion,
+    NoAudioSourceFound,
+    NoVideoSourceFound,
+)
 from .types.input_stream.video_tools import check_support
 
 

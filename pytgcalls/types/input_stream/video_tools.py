@@ -1,9 +1,11 @@
 from math import gcd
 
 from pytgcalls.exceptions import InvalidVideoProportion
-from pytgcalls.types.input_stream.quality import (HighQualityVideo,
-                                                  LowQualityVideo,
-                                                  MediumQualityVideo)
+from pytgcalls.types.input_stream.quality import (
+    HighQualityVideo,
+    LowQualityVideo,
+    MediumQualityVideo,
+)
 from pytgcalls.types.input_stream.video_parameters import VideoParameters
 
 

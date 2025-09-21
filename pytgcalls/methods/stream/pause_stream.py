@@ -1,8 +1,7 @@
 import asyncio
 from typing import Union
 
-from ...exceptions import (NodeJSNotRunning, NoMtProtoClientSet,
-                           NotInGroupCallError)
+from ...exceptions import NodeJSNotRunning, NoMtProtoClientSet, NotInGroupCallError
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
 from ...types import NotInGroupCall

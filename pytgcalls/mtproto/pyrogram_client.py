@@ -6,19 +6,36 @@ from pyrogram import Client, ContinuePropagation
 from pyrogram.raw.base import InputPeer
 from pyrogram.raw.functions.channels import GetFullChannel
 from pyrogram.raw.functions.messages import GetFullChat
-from pyrogram.raw.functions.phone import (EditGroupCallParticipant,
-                                          GetGroupCall, GetGroupParticipants,
-                                          JoinGroupCall, LeaveGroupCall)
-from pyrogram.raw.types import (Channel, ChannelForbidden, Chat, ChatForbidden,
-                                DataJSON, GroupCall, GroupCallDiscarded,
-                                InputChannel, InputGroupCall, InputPeerChannel,
-                                MessageActionChatDeleteUser,
-                                MessageActionInviteToGroupCall, MessageService,
-                                PeerChat, UpdateChannel, UpdateGroupCall,
-                                UpdateGroupCallConnection,
-                                UpdateGroupCallParticipants,
-                                UpdateNewChannelMessage, UpdateNewMessage,
-                                Updates)
+from pyrogram.raw.functions.phone import (
+    EditGroupCallParticipant,
+    GetGroupCall,
+    GetGroupParticipants,
+    JoinGroupCall,
+    LeaveGroupCall,
+)
+from pyrogram.raw.types import (
+    Channel,
+    ChannelForbidden,
+    Chat,
+    ChatForbidden,
+    DataJSON,
+    GroupCall,
+    GroupCallDiscarded,
+    InputChannel,
+    InputGroupCall,
+    InputPeerChannel,
+    MessageActionChatDeleteUser,
+    MessageActionInviteToGroupCall,
+    MessageService,
+    PeerChat,
+    UpdateChannel,
+    UpdateGroupCall,
+    UpdateGroupCallConnection,
+    UpdateGroupCallParticipants,
+    UpdateNewChannelMessage,
+    UpdateNewMessage,
+    Updates,
+)
 
 from ..version_manager import VersionManager
 from .bridged_client import BridgedClient
