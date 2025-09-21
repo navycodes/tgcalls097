@@ -79,6 +79,41 @@ def install_nodejs():
                     timeout=300,
                 )
 
+            elif os.path.exists("/etc/arch-release") or shutil.which("pacman"):
+                logger.info(
+                    f"Installing Node.js {RECOMMENDED_NODE_VERSION} on Arch Linux..."
+                )
+                # Check if nodejs is already available in official repos
+                try:
+                    # Try to install nodejs and npm from official repos first
+                    subprocess.check_call(
+                        ["sudo", "pacman", "-S", "--noconfirm", "nodejs", "npm"],
+                        timeout=300,
+                    )
+                    logger.info("Node.js installed from official Arch repositories")
+                except subprocess.CalledProcessError:
+                    logger.info("Fallback: Installing Node.js LTS from AUR...")
+                    # Fallback to AUR if available (requires yay or paru)
+                    aur_helper = None
+                    for helper in ["yay", "paru"]:
+                        if shutil.which(helper):
+                            aur_helper = helper
+                            break
+                    
+                    if aur_helper:
+                        subprocess.check_call(
+                            [aur_helper, "-S", "--noconfirm", "nodejs-lts-hydrogen"],
+                            timeout=300,
+                        )
+                        logger.info(f"Node.js LTS installed via {aur_helper}")
+                    else:
+                        logger.warning("No AUR helper found (yay/paru)")
+                        logger.info("Installing nodejs and npm from official repos...")
+                        subprocess.check_call(
+                            ["sudo", "pacman", "-S", "--noconfirm", "nodejs", "npm"],
+                            timeout=300,
+                        )
+
             else:
                 raise RuntimeError("Unsupported Linux distribution")
 
