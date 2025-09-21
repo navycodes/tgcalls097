@@ -32,22 +32,22 @@ class Binding:
         self._waiting_ping: Dict[str, Future] = {}
         self._overload_quiet = overload_quiet_mode
 
-        def cleanup():
-            try:
-                loop = None
-                try:
-                    loop = asyncio.get_running_loop()
-                except RuntimeError:
-                    pass
-
-                if loop and not loop.is_closed():
-                    loop.create_task(self.stop())
-                else:
-                    asyncio.run(self.stop())
-            except Exception as e:
-                py_logger.debug(f"Cleanup skip: {e}")
-
-        atexit.register(cleanup)
+        # def cleanup():
+#             try:
+#                 loop = None
+#                 try:
+#                     loop = asyncio.get_running_loop()
+#                 except RuntimeError:
+#                     pass
+# 
+#                 if loop and not loop.is_closed():
+#                     loop.create_task(self.stop())
+#                 else:
+#                     asyncio.run(self.stop())
+#             except Exception as e:
+#                 py_logger.debug(f"Cleanup skip: {e}")
+# 
+#         atexit.register(cleanup)
 
     def on_update(self) -> Callable:
         def decorator(func: Callable) -> Callable:
