@@ -34,6 +34,7 @@ class StreamType:
 
     Support: LiveStream, LocalStream
     """
+
     @property
     def pulse_stream(self):
         self._stream_type = 4

@@ -25,7 +25,7 @@ class OnRawUpdate(Scaffold):
 
         """
 
-        method = 'RAW_UPDATE_HANDLER'
+        method = "RAW_UPDATE_HANDLER"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -34,4 +34,5 @@ class OnRawUpdate(Scaffold):
                     func,
                 )
             return func
+
         return decorator

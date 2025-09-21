@@ -2,13 +2,10 @@ import asyncio
 
 from ...scaffold import Scaffold
 from ...types.call_holder import CallHolder
-from ...types.groups import JoinedVoiceChat
-from ...types.groups import LeftVoiceChat
+from ...types.groups import JoinedVoiceChat, LeftVoiceChat
 from ...types.object import Object
-from ...types.stream import ChangedStream
-from ...types.stream import PausedStream
-from ...types.stream import ResumedStream
-from ...types.stream import StreamDeleted
+from ...types.stream import (ChangedStream, PausedStream, ResumedStream,
+                             StreamDeleted)
 
 
 class RawUpdateHandler(Scaffold):
@@ -18,9 +15,9 @@ class RawUpdateHandler(Scaffold):
     ):
         obj = Object.from_dict(data)
         solved_update = False
-        if 'solver_id' in data:
+        if "solver_id" in data:
             solved_update = self._wait_result.resolve_future_update(
-                data['solver_id'],
+                data["solver_id"],
                 obj,
             )
         if isinstance(obj, PausedStream):
@@ -28,9 +25,11 @@ class RawUpdateHandler(Scaffold):
                 obj.chat_id,
                 CallHolder.PAUSED,
             )
-        elif isinstance(obj, ResumedStream) or\
-                isinstance(obj, ChangedStream) or\
-                isinstance(obj, JoinedVoiceChat):
+        elif (
+            isinstance(obj, ResumedStream)
+            or isinstance(obj, ChangedStream)
+            or isinstance(obj, JoinedVoiceChat)
+        ):
             self._call_holder.set_status(
                 obj.chat_id,
                 CallHolder.PLAYING,
@@ -44,18 +43,20 @@ class RawUpdateHandler(Scaffold):
                 obj.chat_id,
             )
             asyncio.ensure_future(
-                self._binding.send({
-                    'action': 'leave_call',
-                    'chat_id': obj.chat_id,
-                    'type': 'file_deleted',
-                }),
+                self._binding.send(
+                    {
+                        "action": "leave_call",
+                        "chat_id": obj.chat_id,
+                        "type": "file_deleted",
+                    }
+                ),
             )
         if not solved_update:
             await self._on_event_update.propagate(
-                'RAW_UPDATE_HANDLER',
+                "RAW_UPDATE_HANDLER",
                 self,
                 obj,
             )
         return {
-            'result': 'OK',
+            "result": "OK",
         }

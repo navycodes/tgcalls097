@@ -1,23 +1,20 @@
 from math import gcd
 
 from pytgcalls.exceptions import InvalidVideoProportion
-from pytgcalls.types.input_stream.quality import HighQualityVideo
-from pytgcalls.types.input_stream.quality import LowQualityVideo
-from pytgcalls.types.input_stream.quality import MediumQualityVideo
+from pytgcalls.types.input_stream.quality import (HighQualityVideo,
+                                                  LowQualityVideo,
+                                                  MediumQualityVideo)
 from pytgcalls.types.input_stream.video_parameters import VideoParameters
 
 
 def check_support(link: str):
     supported_protocols = [
-        'https://',
-        'http://',
-        'rtmp://',
-        'udp://',
+        "https://",
+        "http://",
+        "rtmp://",
+        "udp://",
     ]
-    return any(
-        protocol in link
-        for protocol in supported_protocols
-    )
+    return any(protocol in link for protocol in supported_protocols)
 
 
 def check_video_params(
@@ -57,7 +54,7 @@ def check_video_params(
         width, height = resize_ratio(dest_width, dest_height, 50)
     if dest_height < height:
         raise InvalidVideoProportion(
-            'Destination height is greater than the original height',
+            "Destination height is greater than the original height",
         )
     width = width - 1 if width % 2 else width
     height = height - 1 if height % 2 else height

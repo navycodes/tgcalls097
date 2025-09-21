@@ -2,9 +2,7 @@ from ...ffprobe import FFprobe
 from ...media_devices.device_info import DeviceInfo
 from ...media_devices.screen_info import ScreenInfo
 from .audio_parameters import AudioParameters
-from .input_stream import InputAudioStream
-from .input_stream import InputStream
-from .input_stream import InputVideoStream
+from .input_stream import InputAudioStream, InputStream, InputVideoStream
 from .video_parameters import VideoParameters
 
 
@@ -49,11 +47,11 @@ class CaptureAVDeviceDesktop(InputStream):
         self.raw_headers = None
         super().__init__(
             InputAudioStream(
-                f'device://{self._audio_path}',
+                f"device://{self._audio_path}",
                 audio_parameters,
             ),
             InputVideoStream(
-                f'screen://{self._video_path}',
+                f"screen://{self._video_path}",
                 video_parameters,
             ),
         )

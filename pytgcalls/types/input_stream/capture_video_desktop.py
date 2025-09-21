@@ -1,7 +1,6 @@
 from ...ffprobe import FFprobe
 from ...media_devices.screen_info import ScreenInfo
-from .input_stream import InputStream
-from .input_stream import InputVideoStream
+from .input_stream import InputStream, InputVideoStream
 from .video_parameters import VideoParameters
 
 
@@ -37,7 +36,7 @@ class CaptureVideoDesktop(InputStream):
         self.raw_headers = None
         super().__init__(
             stream_video=InputVideoStream(
-                f'screen://{self._path}',
+                f"screen://{self._path}",
                 video_parameters,
             ),
         )

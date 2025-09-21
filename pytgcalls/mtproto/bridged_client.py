@@ -1,6 +1,4 @@
-from typing import Any
-from typing import Callable
-from typing import Optional
+from typing import Any, Callable, Optional
 
 
 class BridgedClient:
@@ -70,10 +68,10 @@ class BridgedClient:
 
     @staticmethod
     def chat_id(input_peer):
-        is_channel = hasattr(input_peer, 'channel_id')
-        is_channel_update = input_peer.__class__.__name__ == 'Channel'
-        is_chat = input_peer.__class__.__name__ == 'Chat'
-        is_user = input_peer.__class__.__name__ == 'PeerUser'
+        is_channel = hasattr(input_peer, "channel_id")
+        is_channel_update = input_peer.__class__.__name__ == "Channel"
+        is_chat = input_peer.__class__.__name__ == "Chat"
+        is_user = input_peer.__class__.__name__ == "PeerUser"
         if is_user:
             return input_peer.user_id
         elif is_channel:
@@ -81,7 +79,7 @@ class BridgedClient:
         elif is_channel_update:
             return -1000000000000 - input_peer.id
         elif is_chat:
-            return - input_peer.id
+            return -input_peer.id
         else:
             return -input_peer.chat_id
 

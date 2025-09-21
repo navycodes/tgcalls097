@@ -1,8 +1,7 @@
 from ...ffprobe import FFprobe
 from ...media_devices.device_info import DeviceInfo
 from .audio_parameters import AudioParameters
-from .input_stream import InputAudioStream
-from .input_stream import InputStream
+from .input_stream import InputAudioStream, InputStream
 
 
 class CaptureAudioDevice(InputStream):
@@ -33,7 +32,7 @@ class CaptureAudioDevice(InputStream):
         self.raw_headers = None
         super().__init__(
             InputAudioStream(
-                f'device://{self._audio_path}',
+                f"device://{self._audio_path}",
                 audio_parameters,
             ),
         )

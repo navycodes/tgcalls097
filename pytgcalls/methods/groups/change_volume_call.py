@@ -1,8 +1,7 @@
 from typing import Union
 
-from ...exceptions import NoActiveGroupCall
-from ...exceptions import NodeJSNotRunning
-from ...exceptions import NoMtProtoClientSet
+from ...exceptions import (NoActiveGroupCall, NodeJSNotRunning,
+                           NoMtProtoClientSet)
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
 

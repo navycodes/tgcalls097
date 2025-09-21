@@ -9,13 +9,13 @@ from .stream_video_endend import StreamVideoEnded
 from .unmuted_stream import UnMutedStream
 
 __all__ = (
-    'ChangedStream',
-    'MutedStream',
-    'PausedStream',
-    'ResumedStream',
-    'StreamAudioEnded',
-    'StreamDeleted',
-    'StreamVideoEnded',
-    'UnMutedStream',
-    'StreamTime',
+    "ChangedStream",
+    "MutedStream",
+    "PausedStream",
+    "ResumedStream",
+    "StreamAudioEnded",
+    "StreamDeleted",
+    "StreamVideoEnded",
+    "UnMutedStream",
+    "StreamTime",
 )

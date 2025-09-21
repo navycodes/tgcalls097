@@ -1,6 +1,4 @@
-from typing import List
-from typing import Optional
-from typing import Union
+from typing import List, Optional, Union
 
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold

@@ -2,16 +2,13 @@ import asyncio
 import logging
 import os
 from stat import S_ISFIFO
-from typing import Dict
-from typing import Optional
+from typing import Dict, Optional
 
-from aiohttp import ClientConnectorError
-from aiohttp import ClientResponse
-from aiohttp import ClientSession
+from aiohttp import ClientConnectorError, ClientResponse, ClientSession
 
 from .types.input_stream.video_tools import check_support
 
-py_logger = logging.getLogger('pytgcalls')
+py_logger = logging.getLogger("pytgcalls")
 
 
 class FileManager:
@@ -29,12 +26,11 @@ class FileManager:
                     headers=headers,
                 )
                 response.close()
-                if response.status == 200 or \
-                        response.status == 403:
+                if response.status == 200 or response.status == 403:
                     return
                 else:
                     py_logger.info(
-                        f'{path} returned with {response.status} code',
+                        f"{path} returned with {response.status} code",
                     )
             except ClientConnectorError:
                 pass
@@ -42,7 +38,7 @@ class FileManager:
                 pass
             finally:
                 await session.close()
-        if path.startswith('udp://'):
+        if path.startswith("udp://"):
             return
         if S_ISFIFO(os.stat(path).st_mode):
             return

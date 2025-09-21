@@ -1,17 +1,15 @@
 import json
 
 import requests
-from pyrogram import Client
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from pytgcalls import CustomApi
-from pytgcalls import idle
+from pytgcalls import CustomApi, idle
 
 app = Client(
-    'py-tgcalls',
+    "py-tgcalls",
     api_id=123456789,
-    api_hash='abcdef12345',
+    api_hash="abcdef12345",
 )
 
 ca = CustomApi()
@@ -23,17 +21,20 @@ ca = CustomApi()
 async def custom_api_request(request: dict):
     print(request)
     return {
-        'response': 'BYE',
+        "response": "BYE",
     }
 
 
-@app.on_message(filters.regex('!test'))
+@app.on_message(filters.regex("!test"))
 def test_handler(client: Client, message: Message):
     print(
         requests.post(
-            'http://localhost:24859/', json.dumps({
-                'answer': 'HI',
-            }),
+            "http://localhost:24859/",
+            json.dumps(
+                {
+                    "answer": "HI",
+                }
+            ),
         ).json(),
     )
 

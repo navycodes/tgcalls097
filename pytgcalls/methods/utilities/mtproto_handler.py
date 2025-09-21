@@ -1,9 +1,8 @@
 from ...scaffold import Scaffold
 from ...types import Update
-from ...types.groups import GroupCallParticipant
-from ...types.groups import JoinedGroupCallParticipant
-from ...types.groups import LeftGroupCallParticipant
-from ...types.groups import UpdatedGroupCallParticipant
+from ...types.groups import (GroupCallParticipant, JoinedGroupCallParticipant,
+                             LeftGroupCallParticipant,
+                             UpdatedGroupCallParticipant)
 
 
 class MtProtoHandler(Scaffold):
@@ -21,13 +20,15 @@ class MtProtoHandler(Scaffold):
             self._call_holder.remove_call(
                 chat_id,
             )
-            await self._binding.send({
-                'action': 'leave_call',
-                'chat_id': chat_id,
-                'type': 'kicked_from_group',
-            })
+            await self._binding.send(
+                {
+                    "action": "leave_call",
+                    "chat_id": chat_id,
+                    "type": "kicked_from_group",
+                }
+            )
             await self._on_event_update.propagate(
-                'KICK_HANDLER',
+                "KICK_HANDLER",
                 self,
                 chat_id,
             )
@@ -36,13 +37,15 @@ class MtProtoHandler(Scaffold):
         @self._app.on_closed_voice_chat()
         async def closed_voice_chat_handler(chat_id: int):
             self._cache_user_peer.pop(chat_id)
-            await self._binding.send({
-                'action': 'leave_call',
-                'chat_id': chat_id,
-                'type': 'closed_voice_chat',
-            })
+            await self._binding.send(
+                {
+                    "action": "leave_call",
+                    "chat_id": chat_id,
+                    "type": "closed_voice_chat",
+                }
+            )
             await self._on_event_update.propagate(
-                'CLOSED_HANDLER',
+                "CLOSED_HANDLER",
                 self,
                 chat_id,
             )
@@ -50,7 +53,7 @@ class MtProtoHandler(Scaffold):
         @self._app.on_receive_invite()
         async def receive_invite_handler(action):
             await self._on_event_update.propagate(
-                'INVITE_HANDLER',
+                "INVITE_HANDLER",
                 self,
                 action,
             )
@@ -58,7 +61,7 @@ class MtProtoHandler(Scaffold):
         @self._app.on_left_group()
         async def left_handler(chat_id: int):
             await self._on_event_update.propagate(
-                'LEFT_HANDLER',
+                "LEFT_HANDLER",
                 self,
                 chat_id,
             )
@@ -87,7 +90,7 @@ class MtProtoHandler(Scaffold):
                     participant,
                 )
             await self._on_event_update.propagate(
-                'PARTICIPANTS_LIST',
+                "PARTICIPANTS_LIST",
                 self,
                 update_participant,
             )

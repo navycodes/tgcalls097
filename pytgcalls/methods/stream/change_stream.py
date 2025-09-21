@@ -3,26 +3,20 @@ import logging
 import shlex
 from typing import Union
 
-from ...exceptions import NodeJSNotRunning
-from ...exceptions import NoMtProtoClientSet
-from ...exceptions import NotInGroupCallError
+from ...exceptions import (NodeJSNotRunning, NoMtProtoClientSet,
+                           NotInGroupCallError)
 from ...file_manager import FileManager
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
-from ...types import CaptureAudioDevice
-from ...types import CaptureAVDesktop
-from ...types import CaptureAVDeviceDesktop
-from ...types import CaptureVideoDesktop
-from ...types import NotInGroupCall
-from ...types import StreamDeleted
-from ...types.input_stream import AudioPiped
-from ...types.input_stream import AudioVideoPiped
-from ...types.input_stream import InputStream
-from ...types.input_stream import VideoPiped
+from ...types import (CaptureAudioDevice, CaptureAVDesktop,
+                      CaptureAVDeviceDesktop, CaptureVideoDesktop,
+                      NotInGroupCall, StreamDeleted)
+from ...types.input_stream import (AudioPiped, AudioVideoPiped, InputStream,
+                                   VideoPiped)
 from ...types.input_stream.audio_image_piped import AudioImagePiped
 from ...types.session import Session
 
-py_logger = logging.getLogger('pytgcalls')
+py_logger = logging.getLogger("pytgcalls")
 
 
 class ChangeStream(Scaffold):
@@ -105,86 +99,98 @@ class ChangeStream(Scaffold):
         if self._app is not None:
             if self._wait_until_run is not None:
                 headers = None
-                if isinstance(
-                    stream,
-                    AudioImagePiped,
-                ) or isinstance(
-                    stream,
-                    AudioPiped,
-                ) or isinstance(
-                    stream,
-                    AudioVideoPiped,
-                ) or isinstance(
-                    stream,
-                    VideoPiped,
+                if (
+                    isinstance(
+                        stream,
+                        AudioImagePiped,
+                    )
+                    or isinstance(
+                        stream,
+                        AudioPiped,
+                    )
+                    or isinstance(
+                        stream,
+                        AudioVideoPiped,
+                    )
+                    or isinstance(
+                        stream,
+                        VideoPiped,
+                    )
                 ):
                     headers = stream.raw_headers
                 if stream.stream_video is not None:
-                    if not stream.stream_video.path.startswith('screen://'):
+                    if not stream.stream_video.path.startswith("screen://"):
                         await FileManager.check_file_exist(
                             stream.stream_video.path.replace(
-                                'fifo://',
-                                '',
+                                "fifo://",
+                                "",
                             ).replace(
-                                'image:',
-                                '',
+                                "image:",
+                                "",
                             ),
                             headers,
                         )
                 if stream.stream_audio is not None:
-                    if not stream.stream_audio.path.startswith('device://'):
+                    if not stream.stream_audio.path.startswith("device://"):
                         await FileManager.check_file_exist(
                             stream.stream_audio.path.replace(
-                                'fifo://',
-                                '',
+                                "fifo://",
+                                "",
                             ).replace(
-                                'image:',
-                                '',
+                                "image:",
+                                "",
                             ),
                             headers,
                         )
-                audio_f_parameters = ''
-                video_f_parameters = ''
-                if isinstance(
-                    stream,
-                    AudioImagePiped,
-                ) or isinstance(
-                    stream,
-                    AudioPiped,
-                ) or isinstance(
-                    stream,
-                    AudioVideoPiped,
-                ) or isinstance(
-                    stream,
-                    VideoPiped,
-                ) or isinstance(
-                    stream,
-                    CaptureVideoDesktop,
-                ) or isinstance(
-                    stream,
-                    CaptureAudioDevice,
+                audio_f_parameters = ""
+                video_f_parameters = ""
+                if (
+                    isinstance(
+                        stream,
+                        AudioImagePiped,
+                    )
+                    or isinstance(
+                        stream,
+                        AudioPiped,
+                    )
+                    or isinstance(
+                        stream,
+                        AudioVideoPiped,
+                    )
+                    or isinstance(
+                        stream,
+                        VideoPiped,
+                    )
+                    or isinstance(
+                        stream,
+                        CaptureVideoDesktop,
+                    )
+                    or isinstance(
+                        stream,
+                        CaptureAudioDevice,
+                    )
                 ):
                     await stream.check_pipe()
                     if stream.stream_audio:
                         if stream.stream_audio.header_enabled:
                             audio_f_parameters = stream.headers
-                    audio_f_parameters += ':_cmd_:'.join(
+                    audio_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.ffmpeg_parameters),
                     )
                     if stream.stream_video:
                         if stream.stream_video.header_enabled:
                             video_f_parameters = stream.headers
-                    video_f_parameters += ':_cmd_:'.join(
+                    video_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.ffmpeg_parameters),
                     )
                 elif isinstance(
                     stream,
                     CaptureAVDeviceDesktop,
                 ):
-                    audio_f_parameters += ':_cmd_:'.join(
+                    audio_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.audio_ffmpeg),
                     )
-                    video_f_parameters += ':_cmd_:'.join(
+                    video_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.video_ffmpeg),
                     )
                 elif isinstance(
@@ -195,10 +201,10 @@ class ChangeStream(Scaffold):
                     if stream.stream_audio:
                         if stream.stream_audio.header_enabled:
                             audio_f_parameters = stream.headers
-                    audio_f_parameters += ':_cmd_:'.join(
+                    audio_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.audio_ffmpeg),
                     )
-                    video_f_parameters += ':_cmd_:'.join(
+                    video_f_parameters += ":_cmd_:".join(
                         shlex.split(stream.video_ffmpeg),
                     )
                 solver_id = Session.generate_session_id(24)
@@ -209,33 +215,35 @@ class ChangeStream(Scaffold):
                     stream_audio = stream.stream_audio
                     stream_video = stream.stream_video
                     request = {
-                        'action': 'change_stream',
-                        'chat_id': chat_id,
-                        'lip_sync': stream.lip_sync,
-                        'solver_id': solver_id,
+                        "action": "change_stream",
+                        "chat_id": chat_id,
+                        "lip_sync": stream.lip_sync,
+                        "solver_id": solver_id,
                     }
                     if stream_audio is not None:
-                        request['stream_audio'] = {
-                            'path': stream_audio.path,
-                            'bitrate': stream_audio.parameters.bitrate,
-                            'ffmpeg_parameters': audio_f_parameters,
+                        request["stream_audio"] = {
+                            "path": stream_audio.path,
+                            "bitrate": stream_audio.parameters.bitrate,
+                            "ffmpeg_parameters": audio_f_parameters,
                         }
                     if stream.stream_video is not None:
                         video_parameters = stream_video.parameters
-                        if video_parameters.frame_rate % 5 != 0 and \
-                                not isinstance(stream, AudioImagePiped):
+                        if video_parameters.frame_rate % 5 != 0 and not isinstance(
+                            stream, AudioImagePiped
+                        ):
                             py_logger.warning(
-                                'For better experience the '
-                                'video frame rate must be a multiple of 5',
+                                "For better experience the "
+                                "video frame rate must be a multiple of 5",
                             )
-                        request['stream_video'] = {
-                            'path': stream_video.path,
-                            'width': video_parameters.width,
-                            'height': video_parameters.height,
-                            'framerate': video_parameters.frame_rate,
-                            'ffmpeg_parameters': video_f_parameters,
+                        request["stream_video"] = {
+                            "path": stream_video.path,
+                            "width": video_parameters.width,
+                            "height": video_parameters.height,
+                            "framerate": video_parameters.frame_rate,
+                            "ffmpeg_parameters": video_f_parameters,
                         }
                     await self._binding.send(request)
+
                 asyncio.ensure_future(internal_sender())
                 result = await self._wait_result.wait_future_update(
                     solver_id,

@@ -72,4 +72,5 @@ class PyTgCalls(Methods, Scaffold):
         def cleanup():
             if self._async_core is not None:
                 self._async_core.cancel()
+
         atexit.register(cleanup)

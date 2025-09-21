@@ -8,21 +8,21 @@ class BindingRunner(Scaffold):
     async def _start_binding(self):
         @self._binding.on_update()
         async def update_handler(data: dict):
-            if 'action' in data:
-                if data['action'] == 'join_voice_call_request':
-                    return await self._join_voice_call(data['payload'])
-                elif data['action'] == 'leave_call_request':
+            if "action" in data:
+                if data["action"] == "join_voice_call_request":
+                    return await self._join_voice_call(data["payload"])
+                elif data["action"] == "leave_call_request":
                     return await self._leave_voice_call(data)
-                elif data['action'] == 'stream_audio_ended':
+                elif data["action"] == "stream_audio_ended":
                     return await self._stream_ended_handler(data, True)
-                elif data['action'] == 'stream_video_ended':
+                elif data["action"] == "stream_video_ended":
                     return await self._stream_ended_handler(data, False)
-                elif data['action'] == 'upgrade_video_status':
+                elif data["action"] == "upgrade_video_status":
                     return await self._set_video_call_status(data)
-                elif data['action'] == 'update_request':
+                elif data["action"] == "update_request":
                     return await self._raw_update_handler(data)
             return {
-                'result': 'INVALID_REQUEST',
+                "result": "INVALID_REQUEST",
             }
 
         @self._binding.on_connect()
@@ -32,7 +32,6 @@ class BindingRunner(Scaffold):
             except Exception as e:
                 print(e)
 
-            pass
 
         await PyTgCallsSession().start()
         loop = asyncio.get_event_loop()

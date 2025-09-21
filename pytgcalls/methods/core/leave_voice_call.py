@@ -7,14 +7,14 @@ class LeaveVoiceCall(Scaffold):
         params: dict,
     ):
         result = {
-            'result': 'OK',
+            "result": "OK",
         }
         try:
             await self._app.leave_group_call(
-                int(params['chat_id']),
+                int(params["chat_id"]),
             )
         except Exception as e:
             result = {
-                'result': str(e),
+                "result": str(e),
             }
         return result

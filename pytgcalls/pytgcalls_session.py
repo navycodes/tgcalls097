@@ -2,9 +2,7 @@ import asyncio
 import re
 import sys
 
-from aiohttp import ClientConnectionError
-from aiohttp import ClientResponse
-from aiohttp import ClientSession
+from aiohttp import ClientConnectionError, ClientResponse, ClientSession
 
 from .__version__ import __version__
 from .version_manager import VersionManager
@@ -17,30 +15,34 @@ class PyTgCallsSession:
         if not self.notice_displayed:
             PyTgCallsSession.notice_displayed = True
             print(
-                f'PyTgCalls v{__version__}, Copyright (C) '
-                f'2021-2022 Laky-64 <https://github.com/Laky-64>\n'
-                'Licensed under the terms of the GNU Lesser '
-                'General Public License v3 or later (LGPLv3+)\n',
+                f"PyTgCalls v{__version__}, Copyright (C) "
+                f"2021-2022 Laky-64 <https://github.com/Laky-64>\n"
+                "Licensed under the terms of the GNU Lesser "
+                "General Public License v3 or later (LGPLv3+)\n",
             )
             try:
-                remote_stable_ver = await self._remote_version('master')
-                remote_dev_ver = await self._remote_version('dev')
-                remote_test_ver = remote_stable_ver + '.99'
-                if VersionManager.version_tuple(__version__) > \
-                        VersionManager.version_tuple(remote_test_ver):
+                remote_stable_ver = await self._remote_version("master")
+                remote_dev_ver = await self._remote_version("dev")
+                remote_test_ver = remote_stable_ver + ".99"
+                if VersionManager.version_tuple(
+                    __version__
+                ) > VersionManager.version_tuple(remote_test_ver):
                     remote_ver = remote_readable_ver = remote_dev_ver
                     my_ver = __version__
                 else:
                     remote_readable_ver = remote_stable_ver
                     remote_ver = remote_test_ver
-                    my_ver = __version__ + '.99'
-                if VersionManager.version_tuple(remote_ver) > \
-                        VersionManager.version_tuple(my_ver):
-                    text = f'Update Available!\n' \
-                           f'New PyTgCalls v{remote_readable_ver} ' \
-                           f'is now available!\n'
-                    if not sys.platform.startswith('win'):
-                        print(f'\033[93m{text}\033[0m')
+                    my_ver = __version__ + ".99"
+                if VersionManager.version_tuple(
+                    remote_ver
+                ) > VersionManager.version_tuple(my_ver):
+                    text = (
+                        f"Update Available!\n"
+                        f"New PyTgCalls v{remote_readable_ver} "
+                        f"is now available!\n"
+                    )
+                    if not sys.platform.startswith("win"):
+                        print(f"\033[93m{text}\033[0m")
                     else:
                         print(text)
             except asyncio.exceptions.TimeoutError:
@@ -61,11 +63,12 @@ class PyTgCallsSession:
                 await session.close()
 
         result = re.findall(
-            '__version__ = \'(.*?)\'', (
+            "__version__ = '(.*?)'",
+            (
                 await get_async(
-                    f'https://raw.githubusercontent.com/'
-                    f'pytgcalls/pytgcalls/{branch}'
-                    f'/pytgcalls/__version__.py',
+                    f"https://raw.githubusercontent.com/"
+                    f"pytgcalls/pytgcalls/{branch}"
+                    f"/pytgcalls/__version__.py",
                 )
             ),
         )

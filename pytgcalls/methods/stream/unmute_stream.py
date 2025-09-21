@@ -1,9 +1,8 @@
 import asyncio
 from typing import Union
 
-from ...exceptions import NodeJSNotRunning
-from ...exceptions import NoMtProtoClientSet
-from ...exceptions import NotInGroupCallError
+from ...exceptions import (NodeJSNotRunning, NoMtProtoClientSet,
+                           NotInGroupCallError)
 from ...mtproto import BridgedClient
 from ...scaffold import Scaffold
 from ...types import NotInGroupCall
@@ -65,11 +64,14 @@ class UnMuteStream(Scaffold):
                 async def internal_sender():
                     if not self._wait_until_run.done():
                         await self._wait_until_run
-                    await self._binding.send({
-                        'action': 'unmute_stream',
-                        'chat_id': chat_id,
-                        'solver_id': solver_id,
-                    })
+                    await self._binding.send(
+                        {
+                            "action": "unmute_stream",
+                            "chat_id": chat_id,
+                            "solver_id": solver_id,
+                        }
+                    )
+
                 asyncio.ensure_future(internal_sender())
                 result = await self._wait_result.wait_future_update(
                     solver_id,

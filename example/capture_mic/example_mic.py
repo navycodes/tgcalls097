@@ -1,15 +1,13 @@
 from pyrogram import Client
 
-from pytgcalls import idle
-from pytgcalls import PyTgCalls
-from pytgcalls import StreamType
+from pytgcalls import PyTgCalls, StreamType, idle
 from pytgcalls.media_devices import MediaDevices
 from pytgcalls.types import CaptureAudioDevice
 
 app = Client(
-    'py-tgcalls',
+    "py-tgcalls",
     api_id=123456789,
-    api_hash='abcdef12345',
+    api_hash="abcdef12345",
 )
 
 call_py = PyTgCalls(app)

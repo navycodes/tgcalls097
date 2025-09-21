@@ -1,5 +1,4 @@
 import asyncio
-import atexit
 import json
 import logging
 import os
@@ -10,9 +9,7 @@ from asyncio import Future
 from asyncio.subprocess import Process
 from json import JSONDecodeError
 from time import time
-from typing import Callable
-from typing import Dict
-from typing import Optional
+from typing import Callable, Dict, Optional
 
 from .types.session import Session
 
@@ -33,21 +30,22 @@ class Binding:
         self._overload_quiet = overload_quiet_mode
 
         # def cleanup():
-#             try:
-#                 loop = None
-#                 try:
-#                     loop = asyncio.get_running_loop()
-#                 except RuntimeError:
-#                     pass
-# 
-#                 if loop and not loop.is_closed():
-#                     loop.create_task(self.stop())
-#                 else:
-#                     asyncio.run(self.stop())
-#             except Exception as e:
-#                 py_logger.debug(f"Cleanup skip: {e}")
-# 
-#         atexit.register(cleanup)
+
+    #             try:
+    #                 loop = None
+    #                 try:
+    #                     loop = asyncio.get_running_loop()
+    #                 except RuntimeError:
+    #                     pass
+    #
+    #                 if loop and not loop.is_closed():
+    #                     loop.create_task(self.stop())
+    #                 else:
+    #                     asyncio.run(self.stop())
+    #             except Exception as e:
+    #                 py_logger.debug(f"Cleanup skip: {e}")
+    #
+    #         atexit.register(cleanup)
 
     def on_update(self) -> Callable:
         def decorator(func: Callable) -> Callable:
@@ -100,7 +98,11 @@ class Binding:
                 try:
                     if self._js_process.stdout is None:
                         break
-                    out = (await self._js_process.stdout.readline()).decode().replace("\r", "")
+                    out = (
+                        (await self._js_process.stdout.readline())
+                        .decode()
+                        .replace("\r", "")
+                    )
                     if not out:
                         break
                     list_data = out.split("\n")
@@ -130,7 +132,9 @@ class Binding:
                                 if json_out["ssid"] == self._ssid:
                                     if self._on_request is not None:
 
-                                        async def future_response(future_json_out: dict):
+                                        async def future_response(
+                                            future_json_out: dict,
+                                        ):
                                             if self._on_request is None:
                                                 return
                                             result = await self._on_request(
@@ -142,11 +146,14 @@ class Binding:
                                                 )
                                             else:
                                                 await self._send_error(
-                                                    "INVALID_RESPONSE", future_json_out["uid"]
+                                                    "INVALID_RESPONSE",
+                                                    future_json_out["uid"],
                                                 )
 
                                         asyncio.ensure_future(future_response(json_out))
-                            elif "log_message" in json_out and "verbose_mode" in json_out:
+                            elif (
+                                "log_message" in json_out and "verbose_mode" in json_out
+                            ):
                                 if json_out["verbose_mode"] == 1:
                                     py_logger.debug(json_out["log_message"])
                                 elif json_out["verbose_mode"] == 2:
@@ -158,7 +165,9 @@ class Binding:
                         except JSONDecodeError:
                             if update:
                                 if ":replace_line:" in update:
-                                    print(update.replace(":replace_line:", ""), end="\r")
+                                    print(
+                                        update.replace(":replace_line:", ""), end="\r"
+                                    )
                                 else:
                                     print(update)
                 except TimeoutError:

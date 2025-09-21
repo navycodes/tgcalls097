@@ -1,12 +1,9 @@
-from typing import Dict
-from typing import Optional
+from typing import Dict, Optional
 
 from ...ffprobe import FFprobe
 from ...media_devices.screen_info import ScreenInfo
 from .audio_parameters import AudioParameters
-from .input_stream import InputAudioStream
-from .input_stream import InputStream
-from .input_stream import InputVideoStream
+from .input_stream import InputAudioStream, InputStream, InputVideoStream
 from .video_parameters import VideoParameters
 
 
@@ -42,7 +39,7 @@ class CaptureAVDesktop(InputStream):
         audio_path: str,
         screen_info: ScreenInfo,
         headers: Optional[Dict[str, str]] = None,
-        additional_ffmpeg_parameters: str = '',
+        additional_ffmpeg_parameters: str = "",
         audio_parameters: AudioParameters = AudioParameters(),
         video_parameters: VideoParameters = VideoParameters(),
     ):
@@ -55,11 +52,11 @@ class CaptureAVDesktop(InputStream):
         self.raw_headers = headers
         super().__init__(
             InputAudioStream(
-                f'fifo://{self._audio_path}',
+                f"fifo://{self._audio_path}",
                 audio_parameters,
             ),
             InputVideoStream(
-                f'screen://{self._video_path}',
+                f"screen://{self._video_path}",
                 video_parameters,
             ),
         )

@@ -25,7 +25,7 @@ class OnGroupCallInvite(Scaffold):
                 app.run()
 
         """
-        method = 'INVITE_HANDLER'
+        method = "INVITE_HANDLER"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -34,4 +34,5 @@ class OnGroupCallInvite(Scaffold):
                     func,
                 )
             return func
+
         return decorator

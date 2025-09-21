@@ -1,19 +1,17 @@
 import asyncio
-from typing import Callable
-from typing import Dict
-from typing import List
+from typing import Callable, Dict, List
 
 
 class HandlersHolder:
     def __init__(self):
         self._on_event_update: Dict[str, List[Callable]] = {
-            'RAW_UPDATE_HANDLER': [],
-            'STREAM_END_HANDLER': [],
-            'INVITE_HANDLER': [],
-            'KICK_HANDLER': [],
-            'CLOSED_HANDLER': [],
-            'LEFT_HANDLER': [],
-            'PARTICIPANTS_LIST': [],
+            "RAW_UPDATE_HANDLER": [],
+            "STREAM_END_HANDLER": [],
+            "INVITE_HANDLER": [],
+            "KICK_HANDLER": [],
+            "CLOSED_HANDLER": [],
+            "LEFT_HANDLER": [],
+            "PARTICIPANTS_LIST": [],
         }
 
     async def propagate(

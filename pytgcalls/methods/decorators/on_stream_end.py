@@ -26,7 +26,7 @@ class OnStreamEnd(Scaffold):
 
         """
 
-        method = 'STREAM_END_HANDLER'
+        method = "STREAM_END_HANDLER"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -35,4 +35,5 @@ class OnStreamEnd(Scaffold):
                     func,
                 )
             return func
+
         return decorator

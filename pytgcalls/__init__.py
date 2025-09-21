@@ -4,8 +4,8 @@ from .stream_type import StreamType
 from .sync import idle
 
 __all__ = (
-    'idle',
-    'CustomApi',
-    'PyTgCalls',
-    'StreamType',
+    "idle",
+    "CustomApi",
+    "PyTgCalls",
+    "StreamType",
 )

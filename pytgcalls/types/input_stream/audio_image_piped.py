@@ -1,5 +1,4 @@
-from typing import Dict
-from typing import Optional
+from typing import Dict, Optional
 
 from ...ffprobe import FFprobe
 from .audio_parameters import AudioParameters
@@ -53,7 +52,7 @@ class AudioImagePiped(InputStream):
         audio_parameters: AudioParameters = AudioParameters(),
         video_parameters: VideoParameters = VideoParameters(),
         headers: Optional[Dict[str, str]] = None,
-        additional_ffmpeg_parameters: str = '',
+        additional_ffmpeg_parameters: str = "",
     ):
         self._image_path = image_path
         self._audio_path = audio_path
@@ -62,11 +61,11 @@ class AudioImagePiped(InputStream):
         video_parameters.frame_rate = 1
         super().__init__(
             InputAudioStream(
-                f'fifo://{audio_path}',
+                f"fifo://{audio_path}",
                 audio_parameters,
             ),
             InputVideoStream(
-                f'fifo://image:{image_path}',
+                f"fifo://image:{image_path}",
                 video_parameters,
             ),
         )

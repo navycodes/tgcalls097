@@ -26,7 +26,7 @@ class OnParticipantsChange(Scaffold):
 
         """
 
-        method = 'PARTICIPANTS_LIST'
+        method = "PARTICIPANTS_LIST"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -35,4 +35,5 @@ class OnParticipantsChange(Scaffold):
                     func,
                 )
             return func
+
         return decorator

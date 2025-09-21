@@ -41,6 +41,7 @@ def async_to_sync(obj, name):
         else:
             if inspect.iscoroutine(coroutine):
                 if loop.is_running():
+
                     async def coro_wrapper():
                         return await asyncio.wrap_future(
                             asyncio.run_coroutine_threadsafe(
@@ -72,9 +73,10 @@ def wrap(source):
     for name in dir(source):
         method = getattr(source, name)
 
-        if not name.startswith('_'):
-            if inspect.iscoroutinefunction(method) or \
-                    inspect.isasyncgenfunction(method):
+        if not name.startswith("_"):
+            if inspect.iscoroutinefunction(method) or inspect.isasyncgenfunction(
+                method
+            ):
                 async_to_sync(source, name)
 
 
@@ -83,5 +85,5 @@ wrap(Methods)
 wrap(CustomApi)
 wrap(MtProtoClient)
 wrap(MediaDevices)
-async_to_sync(idle_module, 'idle')
-idle = getattr(idle_module, 'idle')
+async_to_sync(idle_module, "idle")
+idle = getattr(idle_module, "idle")

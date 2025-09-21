@@ -25,7 +25,7 @@ class OnLeft(Scaffold):
                 app.run()
 
         """
-        method = 'LEFT_HANDLER'
+        method = "LEFT_HANDLER"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -34,4 +34,5 @@ class OnLeft(Scaffold):
                     func,
                 )
             return func
+
         return decorator

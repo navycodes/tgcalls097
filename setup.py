@@ -1,17 +1,15 @@
+import logging
 import os
 import platform
 import shutil
 import subprocess
 import sys
-import logging
 
-from setuptools import Extension
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 
 base_path = os.path.abspath(os.path.dirname(__file__))
-logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
 SUPPORTED_NODE_VERSIONS = ["18", "20"]
@@ -21,19 +19,21 @@ RECOMMENDED_NODE_VERSION = "18.20.4"
 def check_node_version():
     try:
         result = subprocess.check_output(
-            ["node", "-v"], 
-            text=True, 
-            stderr=subprocess.DEVNULL,
-            timeout=10
+            ["node", "-v"], text=True, stderr=subprocess.DEVNULL, timeout=10
         ).strip()
         return result
-    except (OSError, subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+    except (
+        OSError,
+        subprocess.CalledProcessError,
+        FileNotFoundError,
+        subprocess.TimeoutExpired,
+    ):
         return None
 
 
 def is_node_version_compatible(version):
     try:
-        major_version = version.lstrip('v').split('.')[0]
+        major_version = version.lstrip("v").split(".")[0]
         return major_version in SUPPORTED_NODE_VERSIONS
     except (ValueError, IndexError):
         return False
@@ -49,21 +49,35 @@ def install_nodejs():
 
     elif system == "linux":
         try:
-            if os.path.exists('/etc/debian_version'):
-                logger.info(f"Installing Node.js {RECOMMENDED_NODE_VERSION} on Debian/Ubuntu...")
-                subprocess.check_call([
-                    'bash', '-c', 
-                    'curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && '
-                    'sudo apt-get install -y nodejs'
-                ], timeout=300)
+            if os.path.exists("/etc/debian_version"):
+                logger.info(
+                    f"Installing Node.js {RECOMMENDED_NODE_VERSION} on Debian/Ubuntu..."
+                )
+                subprocess.check_call(
+                    [
+                        "bash",
+                        "-c",
+                        "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && "
+                        "sudo apt-get install -y nodejs",
+                    ],
+                    timeout=300,
+                )
 
-            elif os.path.exists('/etc/redhat-release') or os.path.exists('/etc/centos-release'):
-                logger.info(f"Installing Node.js {RECOMMENDED_NODE_VERSION} on RHEL/CentOS...")
-                subprocess.check_call([
-                    'bash', '-c',
-                    'curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash - && '
-                    'sudo yum install -y nodejs'
-                ], timeout=300)
+            elif os.path.exists("/etc/redhat-release") or os.path.exists(
+                "/etc/centos-release"
+            ):
+                logger.info(
+                    f"Installing Node.js {RECOMMENDED_NODE_VERSION} on RHEL/CentOS..."
+                )
+                subprocess.check_call(
+                    [
+                        "bash",
+                        "-c",
+                        "curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash - && "
+                        "sudo yum install -y nodejs",
+                    ],
+                    timeout=300,
+                )
 
             else:
                 raise RuntimeError("Unsupported Linux distribution")
@@ -79,7 +93,9 @@ def install_nodejs():
                 logger.info("Installing Node.js using Homebrew...")
                 subprocess.check_call(["brew", "install", "node@18"], timeout=300)
             else:
-                logger.error("Homebrew not found. Please install Node.js manually from https://nodejs.org")
+                logger.error(
+                    "Homebrew not found. Please install Node.js manually from https://nodejs.org"
+                )
                 sys.exit(1)
         except subprocess.CalledProcessError as e:
             logger.error(f"Failed to install Node.js via Homebrew: {e}")
@@ -99,7 +115,9 @@ def ensure_nodejs():
             logger.info(f"Compatible Node.js found: {version}")
             return
         else:
-            logger.warning(f"Node.js {version} found, but requires version 18.x or 20.x")
+            logger.warning(
+                f"Node.js {version} found, but requires version 18.x or 20.x"
+            )
             logger.warning("Attempting to install compatible version...")
     else:
         logger.info("Node.js not found. Installing...")
@@ -115,18 +133,20 @@ def ensure_nodejs():
 def check_npm():
     try:
         subprocess.check_output(
-            ["npm", "--version"], 
-            text=True, 
-            stderr=subprocess.DEVNULL,
-            timeout=10
+            ["npm", "--version"], text=True, stderr=subprocess.DEVNULL, timeout=10
         )
         return True
-    except (OSError, subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+    except (
+        OSError,
+        subprocess.CalledProcessError,
+        FileNotFoundError,
+        subprocess.TimeoutExpired,
+    ):
         return False
 
 
 class NodeJsExtension(Extension):
-    def __init__(self, name, source_dir=''):
+    def __init__(self, name, source_dir=""):
         super().__init__(name, sources=[])
         self.source_dir = os.path.abspath(source_dir)
 
@@ -138,9 +158,9 @@ class SetupHelper:
         ext_dir: str,
         tmp_dir: str,
     ):
-        folder_package = ''
+        folder_package = ""
         for item in sys.path:
-            if 'dist-packages' in item or 'site-packages' in item:
+            if "dist-packages" in item or "site-packages" in item:
                 folder_package = item
                 break
         self._source_dir = source_dir
@@ -149,11 +169,11 @@ class SetupHelper:
         self._folder_package = folder_package
 
     def clean_old_installation(self):
-        if os.path.isdir(os.path.join(self._source_dir, 'src')):
+        if os.path.isdir(os.path.join(self._source_dir, "src")):
             paths_to_clean = [
-                os.path.join(self._folder_package, 'pytgcalls', 'node_modules'),
-                os.path.join(self._folder_package, 'pytgcalls', 'dist'),
-                self._tmp_dir
+                os.path.join(self._folder_package, "pytgcalls", "node_modules"),
+                os.path.join(self._folder_package, "pytgcalls", "dist"),
+                self._tmp_dir,
             ]
 
             for path in paths_to_clean:
@@ -166,10 +186,10 @@ class SetupHelper:
 
     def _copy_source_files(self):
         required_files = [
-            ('src', True),
-            ('package.json', False),
-            ('tsconfig.json', False),
-            ('.npmignore', False)
+            ("src", True),
+            ("package.json", False),
+            ("tsconfig.json", False),
+            (".npmignore", False),
         ]
 
         for filename, is_dir in required_files:
@@ -182,7 +202,9 @@ class SetupHelper:
                         shutil.copytree(src_path, dst_path)
                         logger.info(f"Copied directory: {filename}")
                     else:
-                        raise FileNotFoundError(f"Required directory not found: {src_path}")
+                        raise FileNotFoundError(
+                            f"Required directory not found: {src_path}"
+                        )
                 else:
                     if os.path.exists(src_path):
                         shutil.copyfile(src_path, dst_path)
@@ -196,18 +218,12 @@ class SetupHelper:
     def _run_npm_install(self):
         try:
             logger.info("Running npm install...")
-            if os.path.exists(os.path.join(self._tmp_dir, 'package-lock.json')):
+            if os.path.exists(os.path.join(self._tmp_dir, "package-lock.json")):
                 logger.info("Found package-lock.json, using npm ci...")
-                subprocess.check_call(
-                    ['npm', 'ci'],
-                    cwd=self._tmp_dir,
-                    timeout=600
-                )
+                subprocess.check_call(["npm", "ci"], cwd=self._tmp_dir, timeout=600)
             else:
                 subprocess.check_call(
-                    ['npm', 'install', '.'],
-                    cwd=self._tmp_dir,
-                    timeout=600
+                    ["npm", "install", "."], cwd=self._tmp_dir, timeout=600
                 )
 
             logger.info("npm install completed successfully")
@@ -223,15 +239,12 @@ class SetupHelper:
             raise
 
     def _copy_build_artifacts(self):
-        artifacts = [
-            ('node_modules', 'node_modules'),
-            ('dist', 'dist')
-        ]
+        artifacts = [("node_modules", "node_modules"), ("dist", "dist")]
 
         for src_name, dst_name in artifacts:
             src_path = os.path.join(self._tmp_dir, src_name)
-            dst_path = os.path.join(self._ext_dir, 'pytgcalls', dst_name)
-            
+            dst_path = os.path.join(self._ext_dir, "pytgcalls", dst_name)
+
             if os.path.exists(src_path):
                 try:
                     os.makedirs(os.path.dirname(dst_path), exist_ok=True)
@@ -244,7 +257,7 @@ class SetupHelper:
                 logger.warning(f"Build artifact not found: {src_path}")
 
     def run_installation(self):
-        if not os.path.isdir(os.path.join(self._source_dir, 'src')):
+        if not os.path.isdir(os.path.join(self._source_dir, "src")):
             logger.info("No src directory found, skipping Node.js build")
             return
         try:
@@ -287,70 +300,70 @@ class NodeJsBuilder(build_ext):
 
 def read_readme():
     try:
-        with open(os.path.join(base_path, 'README.md'), encoding='utf-8') as f:
+        with open(os.path.join(base_path, "README.md"), encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         logger.warning("README.md not found")
         return "Python library for Telegram voice calls"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     setup(
-        name='py-tgcalls',
-        version='0.9.7',
-        description='Python library for Telegram voice calls',
+        name="py-tgcalls",
+        version="0.9.7",
+        description="Python library for Telegram voice calls",
         long_description=read_readme(),
-        long_description_content_type='text/markdown',
-        url='https://github.com/pytgcalls/pytgcalls',
-        author='Laky-64',
-        author_email='iraci.matteo@gmail.com',
-        license='LGPL-3.0',
-        license_files=['LICENSE'],
+        long_description_content_type="text/markdown",
+        url="https://github.com/pytgcalls/pytgcalls",
+        author="Laky-64",
+        author_email="iraci.matteo@gmail.com",
+        license="LGPL-3.0",
+        license_files=["LICENSE"],
         project_urls={
-            'Bug Tracker': 'https://github.com/pytgcalls/pytgcalls/issues',
-            'Documentation': 'https://pytgcalls.readthedocs.io/',
-            'Source Code': 'https://github.com/pytgcalls/pytgcalls',
+            "Bug Tracker": "https://github.com/pytgcalls/pytgcalls/issues",
+            "Documentation": "https://pytgcalls.readthedocs.io/",
+            "Source Code": "https://github.com/pytgcalls/pytgcalls",
         },
         classifiers=[
-            'Development Status :: 4 - Beta',
-            'Intended Audience :: Developers',
-            'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
-            'Operating System :: OS Independent',
-            'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3 :: Only',
-            'Programming Language :: Python :: 3.9',
-            'Programming Language :: Python :: 3.10',
-            'Programming Language :: Python :: 3.11',
-            'Programming Language :: Python :: 3.12',
-            'Programming Language :: Python :: 3.13',
-            'Programming Language :: Python :: Implementation :: CPython',
-            'Programming Language :: Python :: Implementation :: PyPy',
-            'Topic :: Communications :: Chat',
-            'Topic :: Internet :: WWW/HTTP',
-            'Topic :: Multimedia :: Sound/Audio',
-            'Topic :: Software Development :: Libraries :: Python Modules',
+            "Development Status :: 4 - Beta",
+            "Intended Audience :: Developers",
+            "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+            "Operating System :: OS Independent",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3 :: Only",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
+            "Programming Language :: Python :: 3.12",
+            "Programming Language :: Python :: 3.13",
+            "Programming Language :: Python :: Implementation :: CPython",
+            "Programming Language :: Python :: Implementation :: PyPy",
+            "Topic :: Communications :: Chat",
+            "Topic :: Internet :: WWW/HTTP",
+            "Topic :: Multimedia :: Sound/Audio",
+            "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-        keywords='telegram voice calls voip webrtc pytgcalls',
-        ext_modules=[NodeJsExtension('pytgcalls')],
-        packages=find_packages(exclude=['tests*', 'docs*', 'examples*']),
+        keywords="telegram voice calls voip webrtc pytgcalls",
+        ext_modules=[NodeJsExtension("pytgcalls")],
+        packages=find_packages(exclude=["tests*", "docs*", "examples*"]),
         install_requires=[
-            'aiohttp>=3.8.0',
-            'psutil>=5.9.0',
-            'screeninfo>=0.8.1',
+            "aiohttp>=3.8.0",
+            "psutil>=5.9.0",
+            "screeninfo>=0.8.1",
         ],
         extras_require={
-            'dev': [
-                'pytest>=7.0.0',
-                'pytest-asyncio>=0.21.0',
-                'black>=22.0.0',
-                'isort>=5.10.0',
-                'flake8>=4.0.0',
+            "dev": [
+                "pytest>=7.0.0",
+                "pytest-asyncio>=0.21.0",
+                "black>=22.0.0",
+                "isort>=5.10.0",
+                "flake8>=4.0.0",
             ],
         },
-        python_requires='>=3.9',
+        python_requires=">=3.9",
         include_package_data=True,
         cmdclass={
-            'build_ext': NodeJsBuilder,
+            "build_ext": NodeJsBuilder,
         },
         zip_safe=False,
     )
@@ -360,21 +373,21 @@ if __name__ == '__main__':
 # import shutil
 # import subprocess
 # import sys
-# 
+#
 # from setuptools import Extension
 # from setuptools import find_packages
 # from setuptools import setup
 # from setuptools.command.build_ext import build_ext
-# 
+#
 # base_path = os.path.abspath(os.path.dirname(__file__))
-# 
-# 
+#
+#
 # class NodeJsExtension(Extension):
 #     def __init__(self, name, source_dir=''):
 #         super().__init__(name, sources=[])
 #         self.source_dir = os.path.abspath(source_dir)
-# 
-# 
+#
+#
 # class SetupHelper:
 #     def __init__(
 #         self,
@@ -391,7 +404,7 @@ if __name__ == '__main__':
 #         self._ext_dir = ext_dir
 #         self._tmp_dir = tmp_dir
 #         self._folder_package = folder_package
-# 
+#
 #     def clean_old_installation(self):
 #         if os.path.isdir(os.path.join(self._source_dir, 'src')):
 #             try:
@@ -415,7 +428,7 @@ if __name__ == '__main__':
 #                 shutil.rmtree(os.path.join(self._tmp_dir))
 #             except OSError:
 #                 pass
-# 
+#
 #     def run_installation(self):
 #         if os.path.isdir(os.path.join(self._source_dir, 'src')):
 #             shutil.copytree(
@@ -447,12 +460,12 @@ if __name__ == '__main__':
 #                 os.path.join(self._tmp_dir, 'dist'),
 #                 os.path.join(self._ext_dir, 'pytgcalls', 'dist'),
 #             )
-# 
-# 
+#
+#
 # class NodeJsBuilder(build_ext):
 #     def run(self):
 #         super().run()
-# 
+#
 #     def build_extension(self, ext):
 #         ext_dir = os.path.abspath(
 #             os.path.dirname(self.get_ext_fullpath(ext.name)),
@@ -466,11 +479,11 @@ if __name__ == '__main__':
 #         )
 #         sh.clean_old_installation()
 #         sh.run_installation()
-# 
-# 
+#
+#
 # with open(os.path.join(base_path, 'README.md'), encoding='utf-8') as f:
 #     readme = f.read()
-# 
+#
 # setup(
 #     name='py-tgcalls',
 #     version='0.9.7',

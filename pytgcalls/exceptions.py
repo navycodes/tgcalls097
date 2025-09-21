@@ -9,7 +9,7 @@ class NodeJSNotInstalled(Exception):
         version_needed: str,
     ):
         super().__init__(
-            f'Please install node ({version_needed}+)',
+            f"Please install node ({version_needed}+)",
         )
 
 
@@ -25,9 +25,9 @@ class TooOldNodeJSVersion(Exception):
         node_version: str,
     ):
         super().__init__(
-            f'Needed node {version_needed}+, '
-            'actually installed is '
-            f'{node_version}',
+            f"Needed node {version_needed}+, "
+            "actually installed is "
+            f"{node_version}",
         )
 
 
@@ -38,14 +38,14 @@ class TooOldPyrogramVersion(Exception):
     """
 
     def __init__(
-            self,
-            version_needed: str,
-            pyrogram_version: str,
+        self,
+        version_needed: str,
+        pyrogram_version: str,
     ):
         super().__init__(
-            f'Needed pyrogram {version_needed}+, '
-            'actually installed is '
-            f'{pyrogram_version}',
+            f"Needed pyrogram {version_needed}+, "
+            "actually installed is "
+            f"{pyrogram_version}",
         )
 
 
@@ -61,9 +61,9 @@ class TooOldTelethonVersion(Exception):
         telethon_version: str,
     ):
         super().__init__(
-            f'Needed telethon {version_needed}+, '
-            'actually installed is '
-            f'{telethon_version}',
+            f"Needed telethon {version_needed}+, "
+            "actually installed is "
+            f"{telethon_version}",
         )
 
 
@@ -75,7 +75,7 @@ class InvalidStreamMode(Exception):
 
     def __init__(self):
         super().__init__(
-            'Invalid stream mode',
+            "Invalid stream mode",
         )
 
 
@@ -92,7 +92,7 @@ class NoMtProtoClientSet(Exception):
 
     def __init__(self):
         super().__init__(
-            'No MtProto client set',
+            "No MtProto client set",
         )
 
 
@@ -110,7 +110,7 @@ class NodeJSNotRunning(Exception):
 
     def __init__(self):
         super().__init__(
-            'Node.js not running',
+            "Node.js not running",
         )
 
 
@@ -123,7 +123,7 @@ class NoActiveGroupCall(Exception):
 
     def __init__(self):
         super().__init__(
-            'No active group call',
+            "No active group call",
         )
 
 
@@ -134,7 +134,7 @@ class NotInGroupCallError(Exception):
 
     def __init__(self):
         super().__init__(
-            'The userbot there isn\'t in a group call',
+            "The userbot there isn't in a group call",
         )
 
 
@@ -145,7 +145,7 @@ class AlreadyJoinedError(Exception):
 
     def __init__(self):
         super().__init__(
-            'Already joined into group call',
+            "Already joined into group call",
         )
 
 
@@ -157,8 +157,7 @@ class TelegramServerError(Exception):
 
     def __init__(self):
         super().__init__(
-            'Telegram Server is having some '
-            'internal problems',
+            "Telegram Server is having some " "internal problems",
         )
 
 
@@ -169,7 +168,7 @@ class PyTgCallsAlreadyRunning(Exception):
 
     def __init__(self):
         super().__init__(
-            'PyTgCalls client is already running',
+            "PyTgCalls client is already running",
         )
 
 
@@ -180,7 +179,7 @@ class TooManyCustomApiDecorators(Exception):
 
     def __init__(self):
         super().__init__(
-            'Too Many Custom Api Decorators',
+            "Too Many Custom Api Decorators",
         )
 
 
@@ -195,7 +194,7 @@ class GroupCallNotFound(Exception):
         chat_id: int,
     ):
         super().__init__(
-            f'Group call not found with the chat id {chat_id}',
+            f"Group call not found with the chat id {chat_id}",
         )
 
 
@@ -206,7 +205,7 @@ class InvalidMtProtoClient(Exception):
 
     def __init__(self):
         super().__init__(
-            'Invalid MtProto Client',
+            "Invalid MtProto Client",
         )
 
 
@@ -218,7 +217,7 @@ class NoVideoSourceFound(Exception):
 
     def __init__(self, path: str):
         super().__init__(
-            f'No video source found on {path}',
+            f"No video source found on {path}",
         )
 
 
@@ -243,7 +242,7 @@ class NoAudioSourceFound(Exception):
 
     def __init__(self, path: str):
         super().__init__(
-            f'No audio source found on {path}',
+            f"No audio source found on {path}",
         )
 
 
@@ -255,7 +254,7 @@ class FFmpegNotInstalled(Exception):
 
     def __init__(self, path: str):
         super().__init__(
-            'FFmpeg ins\'t installed on your server',
+            "FFmpeg ins't installed on your server",
         )
 
 
@@ -266,7 +265,7 @@ class RTMPStreamNeeded(Exception):
 
     def __init__(self):
         super().__init__(
-            'Needed an RTMP Stream',
+            "Needed an RTMP Stream",
         )
 
 
@@ -277,5 +276,5 @@ class UnMuteNeeded(Exception):
 
     def __init__(self):
         super().__init__(
-            'Needed to unmute the userbot',
+            "Needed to unmute the userbot",
         )

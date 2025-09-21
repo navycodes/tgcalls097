@@ -27,7 +27,7 @@ class OnKicked(Scaffold):
 
         """
 
-        method = 'KICK_HANDLER'
+        method = "KICK_HANDLER"
 
         def decorator(func: Callable) -> Callable:
             if self is not None:
@@ -36,4 +36,5 @@ class OnKicked(Scaffold):
                     func,
                 )
             return func
+
         return decorator

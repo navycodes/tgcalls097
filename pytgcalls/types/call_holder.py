@@ -22,16 +22,17 @@ class CallHolder:
 
     @property
     def active_calls(self):
-        return List([
-            GroupCall(x, self._calls[x]) for x in self._calls
-            if self._calls[x] != self.IDLE
-        ])
+        return List(
+            [
+                GroupCall(x, self._calls[x])
+                for x in self._calls
+                if self._calls[x] != self.IDLE
+            ]
+        )
 
     @property
     def calls(self):
-        return List([
-            GroupCall(x, self._calls[x]) for x in self._calls
-        ])
+        return List([GroupCall(x, self._calls[x]) for x in self._calls])
 
     def get_active_call(
         self,

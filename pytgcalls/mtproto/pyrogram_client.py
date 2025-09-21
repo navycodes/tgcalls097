@@ -1,41 +1,24 @@
 import json
-from typing import Callable
-from typing import Dict
-from typing import Optional
-from typing import Union
+from typing import Callable, Dict, Optional, Union
 
 import pyrogram
-from pyrogram import Client
-from pyrogram import ContinuePropagation
+from pyrogram import Client, ContinuePropagation
 from pyrogram.raw.base import InputPeer
 from pyrogram.raw.functions.channels import GetFullChannel
 from pyrogram.raw.functions.messages import GetFullChat
-from pyrogram.raw.functions.phone import EditGroupCallParticipant
-from pyrogram.raw.functions.phone import GetGroupCall
-from pyrogram.raw.functions.phone import GetGroupParticipants
-from pyrogram.raw.functions.phone import JoinGroupCall
-from pyrogram.raw.functions.phone import LeaveGroupCall
-from pyrogram.raw.types import Channel
-from pyrogram.raw.types import ChannelForbidden
-from pyrogram.raw.types import Chat
-from pyrogram.raw.types import ChatForbidden
-from pyrogram.raw.types import DataJSON
-from pyrogram.raw.types import GroupCall
-from pyrogram.raw.types import GroupCallDiscarded
-from pyrogram.raw.types import InputChannel
-from pyrogram.raw.types import InputGroupCall
-from pyrogram.raw.types import InputPeerChannel
-from pyrogram.raw.types import MessageActionChatDeleteUser
-from pyrogram.raw.types import MessageActionInviteToGroupCall
-from pyrogram.raw.types import MessageService
-from pyrogram.raw.types import PeerChat
-from pyrogram.raw.types import UpdateChannel
-from pyrogram.raw.types import UpdateGroupCall
-from pyrogram.raw.types import UpdateGroupCallConnection
-from pyrogram.raw.types import UpdateGroupCallParticipants
-from pyrogram.raw.types import UpdateNewChannelMessage
-from pyrogram.raw.types import UpdateNewMessage
-from pyrogram.raw.types import Updates
+from pyrogram.raw.functions.phone import (EditGroupCallParticipant,
+                                          GetGroupCall, GetGroupParticipants,
+                                          JoinGroupCall, LeaveGroupCall)
+from pyrogram.raw.types import (Channel, ChannelForbidden, Chat, ChatForbidden,
+                                DataJSON, GroupCall, GroupCallDiscarded,
+                                InputChannel, InputGroupCall, InputPeerChannel,
+                                MessageActionChatDeleteUser,
+                                MessageActionInviteToGroupCall, MessageService,
+                                PeerChat, UpdateChannel, UpdateGroupCall,
+                                UpdateGroupCallConnection,
+                                UpdateGroupCallParticipants,
+                                UpdateNewChannelMessage, UpdateNewMessage,
+                                Updates)
 
 from ..version_manager import VersionManager
 from .bridged_client import BridgedClient
@@ -52,7 +35,7 @@ class PyrogramClient(BridgedClient):
         if VersionManager.version_tuple(
             pyrogram.__version__,
         ) > VersionManager.version_tuple(
-            '2.0.0',
+            "2.0.0",
         ):
             self._app.send = self._app.invoke
         self._handler: Dict[str, Callable] = {}
@@ -75,16 +58,16 @@ class PyrogramClient(BridgedClient):
                         participant.muted,
                         participant.volume,
                         participant.can_self_unmute,
-                        participant.video is not None or
-                        participant.presentation is not None,
+                        participant.video is not None
+                        or participant.presentation is not None,
                         participant.presentation is not None,
                         participant.video is not None,
                         participant.raise_hand_rating,
                         participant.left,
                     )
                     if result is not None:
-                        if 'PARTICIPANTS_HANDLER' in self._handler:
-                            await self._handler['PARTICIPANTS_HANDLER'](
+                        if "PARTICIPANTS_HANDLER" in self._handler:
+                            await self._handler["PARTICIPANTS_HANDLER"](
                                 self._cache.get_chat_id(update.call.id),
                                 result,
                                 participant.just_joined,
@@ -112,8 +95,8 @@ class PyrogramClient(BridgedClient):
                     GroupCallDiscarded,
                 ):
                     self._cache.drop_cache(chat_id)
-                    if 'CLOSED_HANDLER' in self._handler:
-                        await self._handler['CLOSED_HANDLER'](
+                    if "CLOSED_HANDLER" in self._handler:
+                        await self._handler["CLOSED_HANDLER"](
                             chat_id,
                         )
             if isinstance(
@@ -127,8 +110,8 @@ class PyrogramClient(BridgedClient):
                         ChannelForbidden,
                     ):
                         self._cache.drop_cache(chat_id)
-                        if 'KICK_HANDLER' in self._handler:
-                            await self._handler['KICK_HANDLER'](
+                        if "KICK_HANDLER" in self._handler:
+                            await self._handler["KICK_HANDLER"](
                                 chat_id,
                             )
             if isinstance(
@@ -146,8 +129,8 @@ class PyrogramClient(BridgedClient):
                         update.message.action,
                         MessageActionInviteToGroupCall,
                     ):
-                        if 'INVITE_HANDLER' in self._handler:
-                            await self._handler['INVITE_HANDLER'](
+                        if "INVITE_HANDLER" in self._handler:
+                            await self._handler["INVITE_HANDLER"](
                                 update.message.action,
                             )
                     if isinstance(
@@ -164,8 +147,8 @@ class PyrogramClient(BridgedClient):
                                 ChatForbidden,
                             ):
                                 self._cache.drop_cache(chat_id)
-                                if 'KICK_HANDLER' in self._handler:
-                                    await self._handler['KICK_HANDLER'](
+                                if "KICK_HANDLER" in self._handler:
+                                    await self._handler["KICK_HANDLER"](
                                         chat_id,
                                     )
             if isinstance(
@@ -196,8 +179,8 @@ class PyrogramClient(BridgedClient):
                                     self._cache.drop_cache(
                                         chat_id,
                                     )
-                                    if 'LEFT_HANDLER' in self._handler:
-                                        await self._handler['LEFT_HANDLER'](
+                                    if "LEFT_HANDLER" in self._handler:
+                                        await self._handler["LEFT_HANDLER"](
                                             chat_id,
                                         )
             raise ContinuePropagation()
@@ -205,36 +188,41 @@ class PyrogramClient(BridgedClient):
     def on_closed_voice_chat(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             if self is not None:
-                self._handler['CLOSED_HANDLER'] = func
+                self._handler["CLOSED_HANDLER"] = func
             return func
+
         return decorator
 
     def on_kicked(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             if self is not None:
-                self._handler['KICK_HANDLER'] = func
+                self._handler["KICK_HANDLER"] = func
             return func
+
         return decorator
 
     def on_receive_invite(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             if self is not None:
-                self._handler['INVITE_HANDLER'] = func
+                self._handler["INVITE_HANDLER"] = func
             return func
+
         return decorator
 
     def on_left_group(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             if self is not None:
-                self._handler['LEFT_HANDLER'] = func
+                self._handler["LEFT_HANDLER"] = func
             return func
+
         return decorator
 
     def on_participants_change(self) -> Callable:
         def decorator(func: Callable) -> Callable:
             if self is not None:
-                self._handler['PARTICIPANTS_HANDLER'] = func
+                self._handler["PARTICIPANTS_HANDLER"] = func
             return func
+
         return decorator
 
     async def get_call(
@@ -286,21 +274,22 @@ class PyrogramClient(BridgedClient):
     ):
         return [
             {
-                'user_id': self.chat_id(participant.peer),
-                'muted': participant.muted,
-                'volume': participant.volume,
-                'can_self_unmute': participant.can_self_unmute,
-                'video': participant.video,
-                'presentation': participant.presentation,
-                'raise_hand_rating': participant.raise_hand_rating,
-                'left': participant.left,
-            } for participant in (
+                "user_id": self.chat_id(participant.peer),
+                "muted": participant.muted,
+                "volume": participant.volume,
+                "can_self_unmute": participant.can_self_unmute,
+                "video": participant.video,
+                "presentation": participant.presentation,
+                "raise_hand_rating": participant.raise_hand_rating,
+                "left": participant.left,
+            }
+            for participant in (
                 await self._app.send(
                     GetGroupParticipants(
                         call=input_call,
                         ids=[],
                         sources=[],
-                        offset='',
+                        offset="",
                         limit=500,
                     ),
                 )
@@ -340,8 +329,8 @@ class PyrogramClient(BridgedClient):
                             participant.muted,
                             participant.volume,
                             participant.can_self_unmute,
-                            participant.video is not None or
-                            participant.presentation is not None,
+                            participant.video is not None
+                            or participant.presentation is not None,
                             participant.presentation is not None,
                             participant.video is not None,
                             participant.raise_hand_rating,
@@ -349,20 +338,20 @@ class PyrogramClient(BridgedClient):
                         )
                 if isinstance(update, UpdateGroupCallConnection):
                     data_json = json.loads(update.params.data)
-                    if 'rtmp' in data_json:
-                        raise Exception('APP_UPGRADE_NEEDED')
-                    elif 'transport' not in data_json:
-                        raise Exception('No transport in update')
-                    transport = data_json['transport']
+                    if "rtmp" in data_json:
+                        raise Exception("APP_UPGRADE_NEEDED")
+                    elif "transport" not in data_json:
+                        raise Exception("No transport in update")
+                    transport = data_json["transport"]
                     return {
-                        'transport': {
-                            'ufrag': transport['ufrag'],
-                            'pwd': transport['pwd'],
-                            'fingerprints': transport['fingerprints'],
-                            'candidates': transport['candidates'],
+                        "transport": {
+                            "ufrag": transport["ufrag"],
+                            "pwd": transport["pwd"],
+                            "fingerprints": transport["fingerprints"],
+                            "candidates": transport["candidates"],
                         },
                     }
-        return {'transport': None}
+        return {"transport": None}
 
     async def leave_group_call(
         self,
