@@ -224,3 +224,26 @@ class Binding:
                     await self._js_process.stdin.drain()
         except ConnectionResetError:
             pass
+        
+    async def stop(self):
+        if self._js_process is not None:
+            try:
+                if not sys.platform.startswith("win"):
+                    self._js_process.send_signal(signal.SIGINT)
+                    await asyncio.wait_for(
+                        self._js_process.communicate(),
+                        timeout=3,
+                    )
+                else:
+                    self._js_process.kill()
+                    await self._js_process.communicate()
+            except subprocess.TimeoutExpired:
+                py_logger.warning("Node.js tidak mati bersih, paksa kill...")
+                self._js_process.kill()
+                await self._js_process.communicate()
+            except ProcessLookupError:
+                pass
+
+            py_logger.info("Node.js subprocess dihentikan manual")
+            self._js_process = None
+
