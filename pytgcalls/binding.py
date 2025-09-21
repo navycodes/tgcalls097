@@ -32,6 +32,7 @@ class Binding:
         self._waiting_ping: Dict[str, Future] = {}
         self._overload_quiet = overload_quiet_mode
 
+        """
         def cleanup():
             async def async_cleanup():
                 try:
@@ -59,6 +60,7 @@ class Binding:
             asyncio.get_event_loop().run_until_complete(async_cleanup())
 
         atexit.register(cleanup)
+        """
 
     def on_update(self) -> Callable:
         def decorator(func: Callable) -> Callable:
