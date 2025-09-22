@@ -345,7 +345,7 @@ def read_readme():
 if __name__ == "__main__":
     setup(
         name="py-tgcalls",
-        version="0.9.7",
+        version="0.9.8",
         description="Python library for Telegram voice calls",
         long_description=read_readme(),
         long_description_content_type="text/markdown",
