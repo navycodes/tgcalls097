@@ -41,9 +41,12 @@ class FFprobe:
         try:
             proc = await asyncio.create_subprocess_exec(
                 "ffprobe",
-                "-v", "error",
-                "-show_entries", "stream=width,height,codec_type,codec_name",
-                "-of", "json",
+                "-v",
+                "error",
+                "-show_entries",
+                "stream=width,height,codec_type,codec_name",
+                "-of",
+                "json",
                 path,
                 *ffmpeg_params,
                 stdout=asyncio.subprocess.PIPE,
