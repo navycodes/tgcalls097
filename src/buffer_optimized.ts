@@ -1,33 +1,29 @@
 export class BufferOptimized {
     private buffer: Buffer[] = [];
-    private availableBytes: number = 0;
-    private readonly chunkSize: number;
+    length: number = 0;
+    readonly byteLength: number;
 
     constructor(byteLength: number) {
-        this.chunkSize = byteLength;
-    }
-
-    get length(): number {
-        return this.availableBytes;
+        this.byteLength = byteLength;
     }
 
     push(data: Buffer): void {
         if (!data || data.length === 0) return;
         this.buffer.push(data);
-        this.availableBytes += data.length;
+        this.length += data.length;
     }
 
     readBytes(): Buffer | null {
-        if (this.availableBytes < this.chunkSize) {
+        if (this.length < this.byteLength) {
             return null;
         }
 
-        const result = Buffer.allocUnsafe(this.chunkSize);
+        const result = Buffer.allocUnsafe(this.byteLength);
         let offset = 0;
 
-        while (offset < this.chunkSize && this.buffer.length > 0) {
+        while (offset < this.byteLength && this.buffer.length > 0) {
             const chunk = this.buffer[0];
-            const need = this.chunkSize - offset;
+            const need = this.byteLength - offset;
 
             if (chunk.length <= need) {
                 chunk.copy(result, offset);
@@ -40,7 +36,7 @@ export class BufferOptimized {
             }
         }
 
-        this.availableBytes -= this.chunkSize;
+        this.length -= this.byteLength;
         return result;
     }
 }
