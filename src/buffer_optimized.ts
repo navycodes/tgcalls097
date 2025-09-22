@@ -7,8 +7,12 @@ export class BufferOptimized {
         this.chunkSize = byteLength;
     }
 
-    push(data: Buffer) {
-        if (data.length === 0) return;
+    get length(): number {
+        return this.availableBytes;
+    }
+
+    push(data: Buffer): void {
+        if (!data || data.length === 0) return;
         this.buffer.push(data);
         this.availableBytes += data.length;
     }
@@ -18,12 +22,12 @@ export class BufferOptimized {
             return null;
         }
 
-        let result = Buffer.allocUnsafe(this.chunkSize);
+        const result = Buffer.allocUnsafe(this.chunkSize);
         let offset = 0;
 
         while (offset < this.chunkSize && this.buffer.length > 0) {
-            let chunk = this.buffer[0];
-            let need = this.chunkSize - offset;
+            const chunk = this.buffer[0];
+            const need = this.chunkSize - offset;
 
             if (chunk.length <= need) {
                 chunk.copy(result, offset);
