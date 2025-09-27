@@ -156,7 +156,7 @@ def ensure_nodejs():
             logger.warning("Attempting to install compatible version...")
     else:
         logger.info("Node.js not found. Installing...")
-    install_nodejs()
+    #install_nodejs()
     version = check_node_version()
     if version and is_node_version_compatible(version):
         logger.info(f"Node.js successfully installed: {version}")
